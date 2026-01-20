@@ -40,13 +40,13 @@
           <!-- 时间标签（移动端显示在顶部） -->
           <div
             :class="[
-              'w-full md:w-1/2 pl-16 mb-4 md:mb-0',
+              'w-full md:w-1/2 pl-12 sm:pl-16 mb-4 md:mb-0',
               index % 2 === 0 ? 'md:text-right md:pr-8 md:pl-0' : 'md:text-left md:pl-8 md:pr-0 md:ml-auto',
             ]"
           >
             <div
               :class="[
-                'text-sm font-semibold transition-colors',
+                'text-xs sm:text-sm font-semibold transition-colors',
                 isDark ? 'text-blue-400' : 'text-blue-600',
               ]"
             >
@@ -58,24 +58,24 @@
           <!-- 内容卡片 -->
           <div
             :class="[
-              'w-full md:w-1/2 pl-16',
+              'w-full md:w-1/2 pl-12 sm:pl-16',
               index % 2 === 0 ? 'md:pl-8 md:pr-0' : 'md:pr-8 md:pl-0 md:ml-auto',
             ]"
           >
             <router-link
               :to="`/experience/${experience.id}`"
               :class="[
-                'block backdrop-blur-sm rounded-2xl p-6 transition-all duration-300 cursor-pointer',
+                'block backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 cursor-pointer',
                 'border hover:shadow-lg hover:-translate-y-1',
                 isDark
                   ? 'bg-white/10 hover:bg-white/15 border-white/10 hover:border-blue-500'
                   : 'bg-white/80 hover:bg-white border-gray-200 hover:border-blue-300 shadow-lg',
               ]"
             >
-              <div class="flex items-start gap-4">
+              <div class="flex items-start gap-3 sm:gap-4">
                 <div
                   v-if="experience.companyLogo"
-                  class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0"
+                  class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0"
                 >
                   <img
                     :src="experience.companyLogo"
@@ -86,7 +86,7 @@
                 <div
                   v-else
                   :class="[
-                    'w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0',
+                    'w-12 h-12 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0',
                     isDark
                       ? 'bg-gradient-to-br from-blue-500/30 to-purple-500/30'
                       : 'bg-gradient-to-br from-blue-100 to-purple-100',
@@ -94,7 +94,7 @@
                 >
                   <i
                     :class="[
-                      'fa-solid fa-building text-2xl',
+                      'fa-solid fa-building text-lg sm:text-2xl',
                       isDark ? 'text-white/50' : 'text-gray-700/30',
                     ]"
                   ></i>

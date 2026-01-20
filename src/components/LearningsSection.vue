@@ -52,12 +52,12 @@
           </div>
         </div>
 
-        <div class="p-6 relative z-10 pt-8">
+        <div class="p-4 sm:p-6 relative z-10 pt-6 sm:pt-8">
           <!-- 状态图标和标题 -->
-          <div class="flex items-start gap-4 mb-4">
+          <div class="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
             <div
               :class="[
-                'flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg',
+                'flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg',
                 learning.status === '已完成'
                   ? isDark
                     ? 'bg-gradient-to-br from-green-500 to-emerald-600'
@@ -69,7 +69,7 @@
             >
               <i
                 :class="[
-                  'text-2xl text-white',
+                  'text-lg sm:text-2xl text-white',
                   learning.status === '已完成' ? 'fa-solid fa-check-circle' : 'fa-solid fa-book-open',
                 ]"
               ></i>
@@ -77,7 +77,7 @@
             <div class="flex-1 min-w-0">
               <h3
                 :class="[
-                  'text-lg font-bold mb-2 transition-colors line-clamp-2',
+                  'text-base sm:text-lg font-bold mb-2 transition-colors line-clamp-2',
                   isDark ? 'text-white' : 'text-gray-900',
                 ]"
               >

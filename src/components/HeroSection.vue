@@ -10,7 +10,7 @@
     >
       <div
         :class="[
-          'relative w-40 h-40 mx-auto mb-8 rounded-full overflow-hidden border-4 shadow-2xl transition-all duration-500 hover:scale-110 hover:rotate-6',
+          'relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-6 sm:mb-8 rounded-full overflow-hidden border-4 shadow-2xl transition-all duration-500 hover:scale-110 hover:rotate-6',
           isDark
             ? 'border-white/30 ring-4 ring-white/10'
             : 'border-gray-300 ring-4 ring-gray-100',
@@ -37,7 +37,7 @@
         transition: { duration: 600, delay: 200 },
       }"
       :class="[
-        'text-5xl md:text-7xl font-extrabold mb-4 transition-colors duration-300',
+        'text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold mb-4 transition-colors duration-300 px-4',
         isDark ? 'text-white' : 'text-gray-900',
       ]"
     >
@@ -91,12 +91,12 @@
         y: 0,
         transition: { duration: 600, delay: 800 },
       }"
-      class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto w-full px-4"
+      class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-3xl mx-auto w-full px-4"
     >
       <router-link
         to="/projects"
         :class="[
-          'backdrop-blur-sm rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2',
+          'backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2',
           isDark
             ? 'bg-white/10 hover:bg-white/15 border border-white/10'
             : 'bg-white/80 hover:bg-white border border-gray-200 shadow-lg',
@@ -104,7 +104,7 @@
       >
         <div
           :class="[
-            'text-3xl mb-2 transition-colors',
+            'text-2xl sm:text-3xl mb-2 transition-colors',
             isDark ? 'text-blue-400' : 'text-blue-600',
           ]"
         >
@@ -112,7 +112,7 @@
         </div>
         <div
           :class="[
-            'text-2xl font-bold mb-1 transition-colors',
+            'text-xl sm:text-2xl font-bold mb-1 transition-colors',
             isDark ? 'text-white' : 'text-gray-900',
           ]"
         >
@@ -120,7 +120,7 @@
         </div>
         <div
           :class="[
-            'text-sm transition-colors',
+            'text-xs sm:text-sm transition-colors',
             isDark ? 'text-gray-400' : 'text-gray-600',
           ]"
         >
@@ -131,7 +131,7 @@
       <router-link
         to="/experiences"
         :class="[
-          'backdrop-blur-sm rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2',
+          'backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2',
           isDark
             ? 'bg-white/10 hover:bg-white/15 border border-white/10'
             : 'bg-white/80 hover:bg-white border border-gray-200 shadow-lg',
@@ -139,7 +139,7 @@
       >
         <div
           :class="[
-            'text-3xl mb-2 transition-colors',
+            'text-2xl sm:text-3xl mb-2 transition-colors',
             isDark ? 'text-purple-400' : 'text-purple-600',
           ]"
         >
@@ -147,7 +147,7 @@
         </div>
         <div
           :class="[
-            'text-2xl font-bold mb-1 transition-colors',
+            'text-xl sm:text-2xl font-bold mb-1 transition-colors',
             isDark ? 'text-white' : 'text-gray-900',
           ]"
         >
@@ -155,7 +155,7 @@
         </div>
         <div
           :class="[
-            'text-sm transition-colors',
+            'text-xs sm:text-sm transition-colors',
             isDark ? 'text-gray-400' : 'text-gray-600',
           ]"
         >
@@ -166,7 +166,7 @@
       <router-link
         to="/learnings"
         :class="[
-          'backdrop-blur-sm rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2',
+          'backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2',
           isDark
             ? 'bg-white/10 hover:bg-white/15 border border-white/10'
             : 'bg-white/80 hover:bg-white border border-gray-200 shadow-lg',
@@ -174,7 +174,7 @@
       >
         <div
           :class="[
-            'text-3xl mb-2 transition-colors',
+            'text-2xl sm:text-3xl mb-2 transition-colors',
             isDark ? 'text-green-400' : 'text-green-600',
           ]"
         >
@@ -182,7 +182,7 @@
         </div>
         <div
           :class="[
-            'text-2xl font-bold mb-1 transition-colors',
+            'text-xl sm:text-2xl font-bold mb-1 transition-colors',
             isDark ? 'text-white' : 'text-gray-900',
           ]"
         >
@@ -190,7 +190,7 @@
         </div>
         <div
           :class="[
-            'text-sm transition-colors',
+            'text-xs sm:text-sm transition-colors',
             isDark ? 'text-gray-400' : 'text-gray-600',
           ]"
         >
@@ -201,7 +201,7 @@
       <router-link
         to="/life"
         :class="[
-          'backdrop-blur-sm rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2',
+          'backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:scale-105 hover:-translate-y-2',
           isDark
             ? 'bg-white/10 hover:bg-white/15 border border-white/10'
             : 'bg-white/80 hover:bg-white border border-gray-200 shadow-lg',
@@ -209,7 +209,7 @@
       >
         <div
           :class="[
-            'text-3xl mb-2 transition-colors',
+            'text-2xl sm:text-3xl mb-2 transition-colors',
             isDark ? 'text-pink-400' : 'text-pink-600',
           ]"
         >
@@ -217,7 +217,7 @@
         </div>
         <div
           :class="[
-            'text-2xl font-bold mb-1 transition-colors',
+            'text-xl sm:text-2xl font-bold mb-1 transition-colors',
             isDark ? 'text-white' : 'text-gray-900',
           ]"
         >
@@ -225,7 +225,7 @@
         </div>
         <div
           :class="[
-            'text-sm transition-colors',
+            'text-xs sm:text-sm transition-colors',
             isDark ? 'text-gray-400' : 'text-gray-600',
           ]"
         >

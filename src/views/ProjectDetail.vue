@@ -57,13 +57,13 @@
           :initial="{ opacity: 0, y: -20 }"
           :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }"
           :class="[
-            'sticky top-20 z-40 mb-8 backdrop-blur-md rounded-2xl border px-6 py-4 transition-all duration-300',
+            'sticky top-16 sm:top-20 z-40 mb-6 sm:mb-8 backdrop-blur-md rounded-xl sm:rounded-2xl border px-4 sm:px-6 py-3 sm:py-4 transition-all duration-300',
             isDark
               ? 'bg-black/50 border-white/10 shadow-xl'
               : 'bg-white/80 border-gray-200 shadow-lg',
           ]"
         >
-          <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center justify-between gap-2 sm:gap-4">
             <button
               @click="$router.back()"
               :class="[
@@ -119,18 +119,18 @@
               class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
             ></div>
             <!-- 标题覆盖在图片上 -->
-            <div class="absolute inset-0 flex items-end p-8 md:p-12">
+            <div class="absolute inset-0 flex items-end p-4 sm:p-6 md:p-8 lg:p-12">
               <div class="w-full">
                 <h1
                   :class="[
-                    'text-4xl md:text-6xl lg:text-7xl font-extrabold mb-4 text-white drop-shadow-2xl leading-tight',
+                    'text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-2 sm:mb-4 text-white drop-shadow-2xl leading-tight',
                   ]"
                 >
                   {{ project.title }}
                 </h1>
                 <p
                   v-if="project.description"
-                  class="text-lg md:text-xl text-white/90 max-w-3xl drop-shadow-lg"
+                  class="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 max-w-3xl drop-shadow-lg"
                 >
                   {{ project.description }}
                 </p>
@@ -147,10 +147,10 @@
           :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
           class="mb-12"
         >
-          <div class="flex flex-wrap items-center gap-4 mb-6">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
             <h1
               :class="[
-                'text-4xl md:text-6xl font-extrabold transition-colors leading-tight',
+                'text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold transition-colors leading-tight',
                 isDark ? 'text-white' : 'text-gray-900',
               ]"
             >
@@ -158,7 +158,7 @@
             </h1>
             <span
               v-if="project.featured"
-              class="px-4 py-2 text-sm font-bold rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg"
+              class="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg"
             >
               <i class="fa-solid fa-star mr-1"></i>
               精选项目
@@ -167,7 +167,7 @@
           <p
             v-if="project.description"
             :class="[
-              'text-xl md:text-2xl leading-relaxed transition-colors',
+              'text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed transition-colors',
               isDark ? 'text-gray-300' : 'text-gray-600',
             ]"
           >
@@ -176,16 +176,16 @@
         </div>
 
         <!-- 主要内容区域 - 两栏布局 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
           <!-- 左侧主内容区 -->
-          <div class="lg:col-span-2 space-y-8">
+          <div class="lg:col-span-2 space-y-6 sm:space-y-8">
             <!-- 项目信息卡片 -->
             <div
               v-motion
               :initial="{ opacity: 0, y: 30 }"
               :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
               :class="[
-                'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
+                'backdrop-blur-md rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 transition-colors shadow-xl border',
                 isDark
                   ? 'bg-white/10 border-white/10'
                   : 'bg-white/80 border-gray-200',
@@ -193,13 +193,13 @@
             >
               <h2
                 :class="[
-                  'text-2xl font-bold mb-6 transition-colors',
+                  'text-xl sm:text-2xl font-bold mb-4 sm:mb-6 transition-colors',
                   isDark ? 'text-white' : 'text-gray-900',
                 ]"
               >
                 项目信息
               </h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <!-- 项目类型 -->
                 <div v-if="project.type">
                   <div class="flex items-center gap-2 mb-2">

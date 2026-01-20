@@ -1,6 +1,6 @@
 <template>
   <section id="技能">
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
       <div
         v-for="(skill, index) in skills"
         :key="skill.id"
@@ -14,16 +14,16 @@
         }"
         :hover="{ scale: 1.1, y: -5 }"
         :class="[
-          'group backdrop-blur-sm rounded-2xl p-6 text-center transition-all duration-500 cursor-pointer',
+          'group backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center transition-all duration-500 cursor-pointer',
           isDark
             ? 'bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/30 shadow-lg hover:shadow-xl'
             : 'bg-white/80 hover:bg-white border border-gray-200 hover:border-gray-300 shadow-lg hover:shadow-xl',
         ]"
       >
-        <div class="mb-4 relative">
+        <div class="mb-2 sm:mb-4 relative">
           <div
             :class="[
-              'w-16 h-16 mx-auto rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6',
+              'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6',
               isDark
                 ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30'
                 : 'bg-gradient-to-br from-blue-100 to-purple-100 group-hover:from-blue-200 group-hover:to-purple-200',
@@ -32,7 +32,7 @@
             <i
               :class="[
                 skill.icon || 'fa-solid fa-code',
-                'text-2xl transition-all duration-500',
+                'text-lg sm:text-xl md:text-2xl transition-all duration-500',
                 isDark
                   ? 'text-blue-400 group-hover:text-blue-300 group-hover:scale-110'
                   : 'text-blue-600 group-hover:text-blue-700 group-hover:scale-110',
@@ -42,7 +42,7 @@
         </div>
         <h3
           :class="[
-            'font-bold text-sm mb-1 transition-colors duration-300 group-hover:text-blue-500',
+            'font-bold text-xs sm:text-sm mb-1 transition-colors duration-300 group-hover:text-blue-500',
             isDark ? 'text-white' : 'text-gray-900',
           ]"
         >

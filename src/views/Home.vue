@@ -14,7 +14,7 @@
     ></div>
 
     <!-- 页面内容 -->
-    <div class="relative z-10 container mx-auto px-4 pt-16">
+    <div class="relative z-10 container mx-auto px-4 pt-20 md:pt-16">
       <!-- 顶部导航 -->
       <Header :nav-items="NAV_ITEMS" />
 

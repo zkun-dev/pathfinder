@@ -1,10 +1,10 @@
 <template>
   <PageLayout title="所有项目" :loading="loading">
-    <div class="flex gap-2 mb-6">
+    <div class="flex flex-wrap gap-2 mb-4 sm:mb-6">
       <button
         @click="filterType = null"
         :class="[
-          'px-4 py-2 rounded-lg transition-colors',
+          'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-colors text-sm sm:text-base',
           filterType === null
             ? 'bg-blue-500 text-white'
             : isDark
@@ -19,7 +19,7 @@
         :key="type"
         @click="filterType = type"
         :class="[
-          'px-4 py-2 rounded-lg transition-colors',
+          'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-colors text-sm sm:text-base',
           filterType === type
             ? 'bg-blue-500 text-white'
             : isDark

@@ -46,7 +46,7 @@
         <!-- 图片网格 -->
         <div
           v-if="life.images && life.images.length > 0"
-          class="relative h-48 overflow-hidden"
+          class="relative h-40 sm:h-48 overflow-hidden"
         >
           <!-- 单张图片 -->
           <img

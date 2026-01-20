@@ -11,7 +11,7 @@
       ]"
     ></div>
 
-    <div class="relative z-10 container mx-auto px-4 pt-28">
+    <div class="relative z-10 container mx-auto px-4 pt-20 md:pt-28">
       <Header :nav-items="[]" />
 
       <!-- 加载状态 -->
@@ -27,10 +27,10 @@
       <!-- 内容区域 -->
       <div v-else class="max-w-6xl mx-auto">
         <!-- 页面头部 -->
-        <div class="flex justify-between items-start mb-12">
+        <div class="flex flex-row justify-between items-center gap-3 sm:gap-4 mb-6 sm:mb-8 md:mb-12">
           <h1
             :class="[
-              'text-4xl md:text-5xl font-bold transition-colors',
+              'text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold transition-colors flex-1 min-w-0',
               isDark ? 'text-white' : 'text-gray-900',
             ]"
           >
@@ -39,14 +39,15 @@
           <button
             @click="$router.push('/')"
             :class="[
-              'flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105',
+              'flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg transition-all duration-300 hover:scale-105 text-xs sm:text-sm md:text-base flex-shrink-0',
               isDark
                 ? 'bg-white/10 hover:bg-white/20 text-white'
                 : 'bg-gray-200 hover:bg-gray-300 text-gray-900',
             ]"
           >
-            <i class="fa-solid fa-arrow-left"></i>
-            返回首页
+            <i class="fa-solid fa-arrow-left text-sm sm:text-base"></i>
+            <span class="hidden sm:inline">返回首页</span>
+            <span class="sm:hidden">返回</span>
           </button>
         </div>
 

@@ -115,13 +115,13 @@
       </div>
     </aside>
 
-    <!-- 主内容区域 -->
-    <div
-      :class="[
-        'transition-all duration-300',
-        sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64',
-      ]"
-    >
+      <!-- 主内容区域 -->
+      <div
+        :class="[
+          'transition-all duration-300',
+          sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-0 lg:ml-64',
+        ]"
+      >
       <!-- 顶部栏 -->
       <header
         :class="[
@@ -294,7 +294,7 @@
       <!-- 内容区域 -->
       <main
         :class="[
-          'p-4 lg:p-6 transition-colors',
+          'p-3 sm:p-4 lg:p-6 transition-colors',
           isDark ? 'bg-gray-900' : 'bg-gray-50',
         ]"
       >

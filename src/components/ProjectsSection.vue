@@ -136,7 +136,7 @@
 
           <!-- 操作按钮 -->
           <div 
-            class="flex items-center gap-3 mt-4 pt-4 border-t" 
+            class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mt-4 pt-4 border-t" 
             :class="isDark ? 'border-gray-700' : 'border-gray-200'"
             @click.stop
           >
@@ -146,15 +146,16 @@
               target="_blank"
               rel="noopener noreferrer"
               :class="[
-                'flex-1 text-center px-4 py-2.5 rounded-lg font-medium transition-all duration-300 hover:scale-105',
+                'flex-1 text-center px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 hover:scale-105',
                 isDark
                   ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg hover:shadow-blue-500/50'
                   : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg hover:shadow-blue-500/50',
               ]"
               title="查看演示"
             >
-              <i class="fa-solid fa-external-link mr-2"></i>
-              查看演示
+              <i class="fa-solid fa-external-link mr-1 sm:mr-2"></i>
+              <span class="hidden sm:inline">查看演示</span>
+              <span class="sm:hidden">演示</span>
             </a>
             <a
               v-if="project.links?.github"
@@ -162,7 +163,7 @@
               target="_blank"
               rel="noopener noreferrer"
               :class="[
-                'p-2.5 rounded-lg transition-all duration-300 hover:scale-110',
+                'p-2 sm:p-2.5 rounded-lg transition-all duration-300 hover:scale-110 flex items-center justify-center',
                 isDark
                   ? 'bg-white/10 text-white hover:bg-white/20'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
