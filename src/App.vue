@@ -1,7 +1,8 @@
 <template>
   <router-view />
+  <Toast />
 </template>
 
 <script setup lang="ts">
-// App 根组件，无需额外逻辑
+import Toast from '@/components/Admin/Toast.vue';
 </script>

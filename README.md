@@ -1,16 +1,32 @@
 # PathFinder | 成长足迹
 
-一个基于 Vue 3 + TypeScript 的现代化个人作品集网站，具有炫酷的 3D 背景效果和流畅的动画体验。
+一个基于 Vue 3 + TypeScript 的现代化个人作品集网站，具有炫酷的 3D 背景效果和流畅的动画体验，包含完整的管理后台系统。
 
 ## ✨ 特性
 
+### 前端展示
 - 🎨 **深色/浅色主题切换** - 支持系统主题检测和手动切换，主题切换流畅无闪烁
 - 🌐 **3D 动态背景** - 基于 Three.js 的粒子系统和能量核心效果，支持主题自适应
 - 🎭 **流畅动画** - 使用 @vueuse/motion 实现页面元素的优雅动画
 - 📱 **响应式设计** - 完美适配桌面端和移动端
+- 🎯 **空状态处理** - 所有页面和模块都有友好的空状态提示
+- 🖼️ **图片展示** - 支持项目图片、生活动态图片等多种图片展示方式
+
+### 管理后台
+- 🔐 **完整认证系统** - JWT 认证，安全的登录和权限管理
+- 📊 **数据管理** - 支持个人信息、技能、项目、工作经历、学习记录、生活动态的完整 CRUD 操作
+- 🖼️ **图片上传** - 支持单图和多图上传，自动压缩和预览
+- ✅ **操作确认** - 删除操作使用美观的确认对话框，防止误操作
+- 🔔 **消息提示** - 统一的 Toast 提示系统，操作成功/失败都有友好提示
+- 📝 **表单验证** - 完整的表单验证和错误提示
+- 🎨 **统一 UI** - 管理界面与前端展示保持一致的视觉风格
+
+### 技术特性
 - 🧩 **组件化架构** - 高度模块化的组件设计，易于维护和扩展
-- ⚡ **性能优化** - 基于 Vite 的快速构建和热更新
+- ⚡ **性能优化** - 基于 Vite 的快速构建和热更新，代码分割优化
 - 🎯 **TypeScript** - 完整的类型支持，提升开发体验
+- 🔌 **API集成** - 完整集成后端API，支持动态数据加载
+- 🛠️ **工具函数** - 丰富的工具函数库，提高开发效率
 
 ## 🛠️ 技术栈
 
@@ -38,6 +54,11 @@
 - **zod** (^3.24.2) - TypeScript 优先的模式验证库
 - **tailwind-merge** (^3.0.2) - 智能合并 Tailwind CSS 类名
 
+### API集成
+- **RESTful API** - 与后端API完整集成
+- **JWT认证** - 支持用户认证和授权
+- **类型安全** - 完整的TypeScript类型定义，与后端数据模型匹配
+
 ## 📁 项目结构
 
 ```
@@ -46,25 +67,62 @@ PathFinder/
 ├── src/
 │   ├── assets/         # 资源文件（图片、字体等）
 │   ├── components/     # Vue 组件
-│   │   ├── Header.vue           # 顶部导航栏（含主题切换）
-│   │   ├── HeroSection.vue     # 英雄区域（个人介绍）
-│   │   ├── SkillsSection.vue   # 技能展示区域
-│   │   ├── ProjectsSection.vue # 项目展示区域
-│   │   ├── Footer.vue          # 页脚
-│   │   └── ThreeDBackground.vue # 3D 背景组件
+│   │   ├── Admin/              # 管理后台组件
+│   │   │   ├── ConfirmDialog.vue    # 确认对话框
+│   │   │   ├── ImageUpload.vue      # 图片上传组件
+│   │   │   ├── Modal.vue            # 模态框组件
+│   │   │   └── Toast.vue            # 提示消息组件
+│   │   ├── EmptyState.vue           # 空状态组件
+│   │   ├── ExperiencesSection.vue   # 工作经历展示
+│   │   ├── ExperiencesTimeline.vue   # 工作经历时间线
+│   │   ├── Footer.vue               # 页脚
+│   │   ├── Header.vue               # 顶部导航栏
+│   │   ├── HeroSection.vue          # 英雄区域
+│   │   ├── LearningsSection.vue     # 学习记录展示
+│   │   ├── LifeGallery.vue           # 生活动态画廊
+│   │   ├── LifeSection.vue          # 生活动态展示
+│   │   ├── ProjectsSection.vue      # 项目展示
+│   │   ├── SkillsSection.vue         # 技能展示
+│   │   └── ThreeDBackground.vue      # 3D 背景组件
 │   ├── composables/    # 组合式函数
-│   │   └── useTheme.ts         # 主题管理（单例模式）
+│   │   ├── useAuth.ts         # 认证管理
+│   │   ├── useTheme.ts        # 主题管理（单例模式）
+│   │   └── useToast.ts        # Toast 提示管理
+│   ├── config/         # 配置文件
+│   │   └── api.ts              # API配置
 │   ├── constants/      # 常量定义
-│   │   └── index.ts            # 导航项、个人信息等常量
+│   │   └── index.ts            # 导航项等常量
+│   ├── services/       # API服务
+│   │   └── api.ts              # API调用封装
 │   ├── router/         # 路由配置
 │   │   └── index.ts            # 路由定义
 │   ├── types/          # TypeScript 类型定义
 │   │   └── index.ts            # 接口和类型
 │   ├── utils/          # 工具函数
+│   │   ├── logger.ts          # 日志工具
 │   │   └── utils.ts            # 通用工具函数
 │   ├── views/          # 页面视图
+│   │   ├── Admin/              # 管理后台页面
+│   │   │   ├── Dashboard.vue         # 仪表盘
+│   │   │   ├── DashboardContent.vue  # 仪表盘内容
+│   │   │   ├── ExperiencesManage.vue # 工作经历管理
+│   │   │   ├── LearningsManage.vue   # 学习记录管理
+│   │   │   ├── LifeManage.vue        # 生活动态管理
+│   │   │   ├── Login.vue             # 登录页面
+│   │   │   ├── ProfileManage.vue     # 个人信息管理
+│   │   │   ├── ProjectsManage.vue     # 项目管理
+│   │   │   └── SkillsManage.vue       # 技能管理
+│   │   ├── About.vue            # 关于我页面
+│   │   ├── ExperienceDetail.vue # 工作经历详情
+│   │   ├── Experiences.vue      # 工作经历列表
 │   │   ├── Home.vue            # 首页
-│   │   └── Other.vue            # 其他页面
+│   │   ├── LearningDetail.vue  # 学习记录详情
+│   │   ├── Learnings.vue       # 学习记录列表
+│   │   ├── Life.vue            # 生活动态列表
+│   │   ├── LifeDetail.vue      # 生活动态详情
+│   │   ├── ProjectDetail.vue  # 项目详情
+│   │   ├── Projects.vue        # 项目列表
+│   │   └── Skills.vue          # 技能列表
 │   ├── App.vue         # 根组件
 │   ├── main.ts         # 应用入口
 │   └── style.css       # 全局样式（含主题变量）
@@ -80,6 +138,15 @@ PathFinder/
 
 - **Node.js** >= 18.0.0
 - **pnpm** >= 8.0.0
+- **后端API服务** - 需要先启动后端服务（参考 `pathfinder-backend` 项目）
+
+### 配置环境变量
+
+在项目根目录创建 `.env` 文件（可选，默认使用 `http://localhost:3001/api`）：
+
+```env
+VITE_API_BASE_URL=http://localhost:3001/api
+```
 
 ### 安装依赖
 
@@ -94,6 +161,8 @@ pnpm dev
 ```
 
 开发服务器将在 http://localhost:3000 启动
+
+**注意**：确保后端API服务已启动（默认运行在 http://localhost:3001）
 
 ### 构建生产版本
 
@@ -159,6 +228,22 @@ const { theme, toggleTheme, isDark, isLight } = useTheme();
 - 版权信息
 - 社交媒体链接
 
+### EmptyState
+
+空状态组件，用于数据为空时的友好提示：
+- 自定义图标、标题和描述
+- 可选的操作按钮
+- 适配深色/浅色主题
+
+### Admin Components
+
+管理后台专用组件：
+
+- **Modal** - 模态框组件，用于添加/编辑表单
+- **ConfirmDialog** - 确认对话框，用于删除等危险操作
+- **Toast** - 提示消息组件，显示操作成功/失败提示
+- **ImageUpload** - 图片上传组件，支持单图和多图上传
+
 ## 🔧 开发指南
 
 ### 添加新页面
@@ -184,9 +269,30 @@ const { theme, toggleTheme, isDark, isLight } = useTheme();
 }
 ```
 
+### 管理后台使用
+
+项目包含完整的管理后台系统，支持所有数据的可视化管理：
+
+1. **访问管理后台** - 访问 `/admin/login` 进行登录
+2. **数据管理** - 在管理后台可以：
+   - 管理个人信息（头像、简介、联系方式等）
+   - 管理技能列表（名称、分类、熟练度等）
+   - 管理项目（标题、描述、技术栈、链接等）
+   - 管理工作经历（公司、职位、时间、成就等）
+   - 管理学习记录（标题、分类、状态、资源等）
+   - 管理生活动态（标题、内容、图片、标签等）
+3. **图片上传** - 支持上传封面图、项目图片、生活动态图片等
+4. **操作提示** - 所有操作都有成功/失败提示，删除操作需要确认
+
 ### 修改个人信息
 
-编辑 `src/constants/index.ts` 中的 `DEFAULT_PERSONAL_INFO` 常量
+现在所有数据都通过管理后台进行管理：
+
+1. **使用管理界面** - 登录管理后台，通过可视化界面管理所有数据
+2. **通过后端API管理** - 使用后端提供的API接口直接管理数据
+3. **直接操作数据库** - 通过Prisma Studio等工具直接操作数据库
+
+前端会自动从API获取最新数据并展示。
 
 ## 📝 代码规范
 
@@ -196,8 +302,114 @@ const { theme, toggleTheme, isDark, isLight } = useTheme();
 - 使用 Tailwind CSS 进行样式编写
 - 组件和函数使用 PascalCase 命名
 - 组合式函数使用 `use` 前缀
+- 使用统一的日志工具 (`logger`) 替代 `console.log`
+- 错误处理使用统一的错误提取函数 (`getErrorMessage`)
+- 日期格式化使用统一的工具函数 (`formatDate`)
+
+## 🔌 API集成
+
+### API配置
+
+API基础URL通过环境变量配置：
+
+```env
+VITE_API_BASE_URL=http://localhost:3001/api
+```
+
+如果不配置，默认使用 `http://localhost:3001/api`
+
+### 使用API服务
+
+```typescript
+import { profileApi, skillApi, projectApi } from '@/services/api';
+
+// 获取个人信息
+const profile = await profileApi.getProfile();
+
+// 获取技能列表
+const skills = await skillApi.getSkills();
+
+// 获取项目列表
+const projects = await projectApi.getProjects({ featured: true });
+```
+
+### 认证
+
+如果需要使用需要认证的API（如创建、更新、删除），需要先登录：
+
+```typescript
+import { useAuth } from '@/composables/useAuth';
+
+const { login, isAuthenticated } = useAuth();
+
+// 登录
+await login({ username: 'admin', password: 'admin123' });
+
+// 检查是否已登录
+if (isAuthenticated.value) {
+  // 执行需要认证的操作
+}
+```
+
+### Toast 提示
+
+使用 Toast 提示系统显示操作结果：
+
+```typescript
+import { useToast } from '@/composables/useToast';
+
+const toast = useToast();
+
+// 成功提示
+toast.success('操作成功！');
+
+// 错误提示
+toast.error('操作失败！');
+
+// 警告提示
+toast.warning('请注意！');
+
+// 信息提示
+toast.info('提示信息');
+```
+
+### 工具函数
+
+项目提供了丰富的工具函数：
+
+```typescript
+import { formatDate, safeJsonParse, getErrorMessage } from '@/utils/utils';
+import { logger } from '@/utils/logger';
+
+// 格式化日期
+const dateStr = formatDate(new Date()); // "2024年1月1日"
+const shortDate = formatDateShort(new Date()); // "2024-01-01"
+
+// 安全解析 JSON
+const data = safeJsonParse(jsonString, {});
+
+// 提取错误消息
+const errorMsg = getErrorMessage(error, '默认错误消息');
+
+// 日志输出（生产环境自动禁用）
+logger.info('信息');
+logger.error('错误');
+```
 
 ## 🐛 问题排查
+
+### API连接失败
+
+- 确保后端服务已启动（默认运行在 http://localhost:3001）
+- 检查 `.env` 文件中的 `VITE_API_BASE_URL` 配置是否正确
+- 检查浏览器控制台的网络请求，查看具体的错误信息
+- 确认后端CORS配置允许前端域名访问
+
+### 数据加载失败
+
+- 检查后端数据库是否已初始化
+- 确认后端API返回的数据格式是否正确
+- 查看浏览器控制台的错误信息
 
 ### 3D 背景不显示
 
@@ -210,6 +422,18 @@ const { theme, toggleTheme, isDark, isLight } = useTheme();
 - 检查 `useTheme` composable 是否正确导入
 - 检查 CSS 变量是否正确定义
 - 清除浏览器缓存后重试
+
+### 管理后台无法访问
+
+- 确保已登录（访问 `/admin/login`）
+- 检查 JWT token 是否有效
+- 确认后端认证服务正常运行
+
+### 图片上传失败
+
+- 检查图片大小是否超过限制（默认 5MB）
+- 确认后端文件上传服务正常运行
+- 检查网络连接是否正常
 
 ## 📄 许可证
 
