@@ -128,13 +128,87 @@ export interface LoginResponse {
     id: number;
     username: string;
     email: string;
+    role?: string;
+  };
+}
+
+export interface AuthUser {
+  id: number;
+  username: string;
+  email: string;
+  role?: string;
+}
+
+// 文件上传相关
+export interface UploadResponse {
+  url: string;
+  filename: string;
+  size: number;
+  mimetype: string;
+}
+
+export interface FileUploadOptions {
+  accept?: string;
+  maxSize?: number;
+  multiple?: boolean;
+}
+
+// 主题相关
+export type Theme = 'light' | 'dark' | 'auto';
+
+export interface ThemeConfig {
+  theme: Theme;
+  systemPreference: Theme;
+  customColors?: Record<string, string>;
+}
+
+// Toast 相关
+export interface ToastMessage {
+  id: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  title?: string;
+  message: string;
+  duration?: number;
+  persistent?: boolean;
+}
+
+// 模态框相关
+export interface ModalOptions {
+  title?: string;
+  closable?: boolean;
+  width?: string;
+  height?: string;
+  showFooter?: boolean;
+}
+
+// 表单相关
+export interface FormField {
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'file';
+  required?: boolean;
+  placeholder?: string;
+  options?: Array<{ label: string; value: any }>;
+  validation?: {
+    min?: number;
+    max?: number;
+    pattern?: string;
+    custom?: (value: any) => string | null;
   };
 }
 
 // API响应类型
-export interface ApiResponse<T> {
+export interface ApiResponse<T = any> {
   data: T;
   message?: string;
+  success?: boolean;
+}
+
+export interface ApiError {
+  error: string;
+  message?: string;
+  code?: string;
+  status?: number;
 }
 
 export interface PaginatedResponse<T> {
@@ -144,7 +218,44 @@ export interface PaginatedResponse<T> {
     limit: number;
     total: number;
     totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
   };
+}
+
+// 查询参数类型
+export interface QueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+// 技能查询参数
+export interface SkillsQueryParams extends QueryParams {
+  category?: string;
+  proficiency?: number;
+}
+
+// 项目查询参数
+export interface ProjectsQueryParams extends QueryParams {
+  featured?: boolean;
+  type?: string;
+  techStack?: string;
+}
+
+// 学习记录查询参数
+export interface LearningsQueryParams extends QueryParams {
+  category?: string;
+  status?: string;
+  tags?: string;
+}
+
+// 生活动态查询参数
+export interface LifeQueryParams extends QueryParams {
+  published?: boolean;
+  tags?: string;
 }
 
 // 兼容旧版本的PersonalInfo（用于向后兼容）

@@ -1,12 +1,12 @@
-import { twMerge } from "tailwind-merge"
+import { twMerge } from 'tailwind-merge'
 
 /**
  * 合并 Tailwind CSS 类名
  * 替代 clsx，使用 Vue 原生方式
  */
 export function cn(...inputs: (string | boolean | null | undefined)[]) {
-  const classes = inputs.filter(Boolean).join(' ');
-  return twMerge(classes);
+  const classes = inputs.filter(Boolean).join(' ')
+  return twMerge(classes)
 }
 
 /**
@@ -20,13 +20,13 @@ export function formatDate(
   options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'long',
-    day: 'numeric',
+    day: 'numeric'
   }
 ): string {
-  if (!dateString) return '';
-  const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
-  if (isNaN(date.getTime())) return '';
-  return date.toLocaleDateString('zh-CN', options);
+  if (!dateString) return ''
+  const date = typeof dateString === 'string' ? new Date(dateString) : dateString
+  if (isNaN(date.getTime())) return ''
+  return date.toLocaleDateString('zh-CN', options)
 }
 
 /**
@@ -36,8 +36,8 @@ export function formatDateShort(dateString: string | Date | null | undefined): s
   return formatDate(dateString, {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit',
-  }).replace(/\//g, '-');
+    day: '2-digit'
+  }).replace(/\//g, '-')
 }
 
 /**
@@ -50,11 +50,11 @@ export function safeJsonParse<T = any>(
   jsonString: string,
   defaultValue: T | null = null
 ): T | null {
-  if (!jsonString || !jsonString.trim()) return defaultValue;
+  if (!jsonString || !jsonString.trim()) return defaultValue
   try {
-    return JSON.parse(jsonString) as T;
+    return JSON.parse(jsonString) as T
   } catch (error) {
-    return defaultValue;
+    return defaultValue
   }
 }
 
@@ -66,15 +66,170 @@ export function safeJsonParse<T = any>(
  */
 export function getErrorMessage(error: unknown, defaultMessage = '操作失败'): string {
   if (error instanceof Error) {
-    return error.message || defaultMessage;
+    return error.message || defaultMessage
   }
   if (typeof error === 'string') {
-    return error;
+    return error
   }
-  if (error && typeof error === 'object' && 'message' in error) {
-    return String(error.message) || defaultMessage;
+  if (error && typeof error === 'object') {
+    if ('message' in error) {
+      return String(error.message) || defaultMessage
+    }
+    if ('error' in error) {
+      return String(error.error) || defaultMessage
+    }
+    if ('status' in error && typeof error.status === 'number') {
+      return `请求失败 (${error.status})`
+    }
   }
-  return defaultMessage;
+  return defaultMessage
+}
+
+/**
+ * 检查是否为空值
+ */
+export function isEmpty(value: unknown): boolean {
+  if (value === null || value === undefined) return true
+  if (typeof value === 'string') return value.trim() === ''
+  if (Array.isArray(value)) return value.length === 0
+  if (typeof value === 'object') return Object.keys(value).length === 0
+  return false
+}
+
+/**
+ * 深拷贝对象
+ */
+export function deepClone<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') return obj
+  if (obj instanceof Date) return new Date(obj.getTime()) as T
+  if (obj instanceof Array) return obj.map(item => deepClone(item)) as T
+  if (typeof obj === 'object') {
+    const cloned = {} as T
+    Object.keys(obj).forEach(key => {
+      cloned[key as keyof T] = deepClone((obj as any)[key])
+    })
+    return cloned
+  }
+  return obj
+}
+
+/**
+ * 数组去重
+ */
+export function unique<T>(array: T[], key?: keyof T): T[] {
+  if (!key) return [...new Set(array)]
+
+  const seen = new Set()
+  return array.filter(item => {
+    const value = item[key]
+    if (seen.has(value)) return false
+    seen.add(value)
+    return true
+  })
+}
+
+/**
+ * 数组分组
+ */
+export function groupBy<T, K extends keyof T>(array: T[], key: K): Record<string, T[]> {
+  return array.reduce(
+    (groups, item) => {
+      const group = String(item[key])
+      groups[group] = groups[group] || []
+      groups[group].push(item)
+      return groups
+    },
+    {} as Record<string, T[]>
+  )
+}
+
+/**
+ * 生成随机字符串
+ */
+export function generateRandomString(length: number = 8): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return result
+}
+
+/**
+ * 格式化文件大小
+ */
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 B'
+
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+/**
+ * 截断文本
+ */
+export function truncateText(text: string, maxLength: number, suffix: string = '...'): string {
+  if (!text || text.length <= maxLength) return text
+  return text.substring(0, maxLength - suffix.length) + suffix
+}
+
+/**
+ * 首字母大写
+ */
+export function capitalize(str: string): string {
+  if (!str) return str
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
+
+/**
+ * 驼峰转下划线
+ */
+export function camelToSnake(str: string): string {
+  return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+}
+
+/**
+ * 下划线转驼峰
+ */
+export function snakeToCamel(str: string): string {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase())
+}
+
+/**
+ * localStorage 工具
+ */
+export const storage = {
+  get: <T = any>(key: string, defaultValue?: T): T | null => {
+    try {
+      const item = localStorage.getItem(key)
+      return item ? JSON.parse(item) : defaultValue || null
+    } catch {
+      return defaultValue || null
+    }
+  },
+
+  set: (key: string, value: any): void => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value))
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error)
+    }
+  },
+
+  remove: (key: string): void => {
+    localStorage.removeItem(key)
+  },
+
+  getRaw: (key: string): string | null => {
+    return localStorage.getItem(key)
+  },
+
+  setRaw: (key: string, value: string): void => {
+    localStorage.setItem(key, value)
+  }
 }
 
 /**
@@ -82,7 +237,7 @@ export function getErrorMessage(error: unknown, defaultMessage = '操作失败')
  * @param ms - 延迟毫秒数
  */
 export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 /**
@@ -92,15 +247,15 @@ export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
+  let timeout: ReturnType<typeof setTimeout> | null = null
   return function executedFunction(...args: Parameters<T>) {
     const later = () => {
-      timeout = null;
-      func(...args);
-    };
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
+      timeout = null
+      func(...args)
+    }
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
 }
 
 /**
@@ -110,12 +265,12 @@ export function throttle<T extends (...args: any[]) => any>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
-  let inThrottle: boolean;
+  let inThrottle: boolean
   return function executedFunction(...args: Parameters<T>) {
     if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
+      func(...args)
+      inThrottle = true
+      setTimeout(() => (inThrottle = false), limit)
     }
-  };
+  }
 }
