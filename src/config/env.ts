@@ -25,7 +25,9 @@ export const isProd = import.meta.env.PROD;
  */
 export const env = {
   // API 基础地址
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://pathfinder-backend-production.up.railway.app/api',
+  // ⚠️ 重要：生产环境必须在 Railway Variables 中设置 VITE_API_BASE_URL
+  // 默认值仅作为后备，实际应该通过环境变量设置
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://pathfinder-backend-production-3268.up.railway.app/api',
   
   // 当前环境模式
   MODE,
@@ -59,7 +61,8 @@ export const prodConfig = {
   // 生产环境 API 地址
   // ⚠️ 重要：必须在 Railway Variables 中设置 VITE_API_BASE_URL
   // 如果不设置，会使用下面的默认值（仅作为后备）
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://pathfinder-backend-production.up.railway.app/api',
+  // 注意：默认值包含数字后缀，实际使用时应该通过环境变量设置正确的后端地址
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://pathfinder-backend-production-3268.up.railway.app/api',
   
   // 是否启用调试日志
   enableDebugLog: false,
