@@ -11,10 +11,7 @@ import type {
   LoginRequest,
   LoginResponse,
   PaginatedResponse,
-  ApiResponse,
   ApiError,
-  QueryParams,
-  SkillsQueryParams,
   ProjectsQueryParams,
   LearningsQueryParams,
   LifeQueryParams,
@@ -22,12 +19,13 @@ import type {
 } from '@/types'
 
 // 请求拦截器：添加认证token
-const getAuthHeaders = (contentType: string = 'application/json'): HeadersInit => {
+const getAuthHeaders = (skipContentType: boolean = false): HeadersInit => {
   const token = localStorage.getItem('token')
   const headers: HeadersInit = {}
 
-  if (contentType && contentType !== 'multipart/form-data') {
-    headers['Content-Type'] = contentType
+  // 对于文件上传，不设置 Content-Type，让浏览器自动设置（包含 boundary）
+  if (!skipContentType) {
+    headers['Content-Type'] = 'application/json'
   }
 
   if (token) {
@@ -44,18 +42,29 @@ async function request<T>(
   customHeaders?: HeadersInit
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`
-  const defaultHeaders = getAuthHeaders()
+  
+  // 如果是 FormData，不设置默认的 Content-Type
+  const isFormData = options.body instanceof FormData
+  const defaultHeaders = getAuthHeaders(isFormData)
 
   try {
     logger.debug(`API Request: ${options.method || 'GET'} ${url}`)
 
+    // 合并 headers，但如果是 FormData 且没有显式设置 Content-Type，则让浏览器自动设置
+    const mergedHeaders: Record<string, string> = {
+      ...defaultHeaders as Record<string, string>,
+      ...customHeaders as Record<string, string>,
+      ...options.headers as Record<string, string>
+    }
+    
+    // 如果是 FormData，删除手动设置的 Content-Type（让浏览器自动设置）
+    if (isFormData && mergedHeaders['Content-Type']?.includes('multipart/form-data')) {
+      delete mergedHeaders['Content-Type']
+    }
+
     const response = await fetch(url, {
       ...options,
-      headers: {
-        ...defaultHeaders,
-        ...customHeaders,
-        ...options.headers
-      }
+      headers: mergedHeaders
     })
 
     // 处理 204 No Content 响应
@@ -325,6 +334,8 @@ export const lifeApi = {
   }
 }
 
+import { extractFilePath, validateFileType, validateFileSize, MAX_FILE_SIZE, ALLOWED_IMAGE_TYPES } from '@/utils/upload'
+
 // 文件上传API
 export const uploadApi = {
   uploadFile: async (file: File): Promise<UploadResponse> => {
@@ -332,10 +343,15 @@ export const uploadApi = {
       throw new Error('请选择要上传的文件')
     }
 
-    // 检查文件大小 (默认 5MB)
-    const maxSize = 5 * 1024 * 1024 // 5MB
-    if (file.size > maxSize) {
-      throw new Error('文件大小不能超过 5MB')
+    // 验证文件类型
+    if (!validateFileType(file, ALLOWED_IMAGE_TYPES)) {
+      throw new Error('不支持的文件类型，仅支持 JPG、PNG、GIF、WebP 格式')
+    }
+
+    // 验证文件大小
+    if (!validateFileSize(file, MAX_FILE_SIZE)) {
+      const maxSizeMB = MAX_FILE_SIZE / (1024 * 1024)
+      throw new Error(`文件大小不能超过 ${maxSizeMB}MB`)
     }
 
     const formData = new FormData()
@@ -349,8 +365,8 @@ export const uploadApi = {
         {
           method: 'POST',
           body: formData
-        },
-        getAuthHeaders('multipart/form-data')
+          // request 函数会自动处理 FormData，不设置 Content-Type
+        }
       )
 
       logger.info(`File uploaded successfully: ${response.url}`)
@@ -362,57 +378,19 @@ export const uploadApi = {
   },
 
   deleteFile: async (url: string): Promise<{ message: string }> => {
-    // 从URL中提取文件路径
-    let filePath = url
+    // 使用工具函数提取文件路径
+    const filePath = extractFilePath(url)
 
-    // 如果是完整URL，提取路径部分
-    try {
-      const urlObj = new URL(url)
-      filePath = urlObj.pathname
-    } catch {
-      // 如果不是完整URL，尝试提取路径
-      if (url.startsWith('http://') || url.startsWith('https://')) {
-        // 已经是完整URL但URL解析失败，尝试从URL中提取路径
-        const match = url.match(/\/uploads\/[^\/]+/)
-        if (match) {
-          filePath = match[0]
-        } else {
-          filePath = url
-        }
-      } else if (url.startsWith('/')) {
-        // 相对路径，直接使用
-        filePath = url
-      } else {
-        // 可能是文件名，需要添加路径前缀
-        filePath = `/uploads/${url}`
-      }
-    }
-
-    // 确保路径以 /uploads/ 开头
-    if (!filePath.startsWith('/uploads/')) {
-      // 如果路径不包含 /uploads/，尝试添加
-      if (filePath.startsWith('/')) {
-        filePath = `/uploads${filePath}`
-      } else {
-        filePath = `/uploads/${filePath}`
-      }
-    }
-
-    const headers = getAuthHeaders()
-
-    // 后端期望路径作为URL路径参数，例如：DELETE /api/upload/uploads/filename.jpg
-    // 或者作为查询参数：DELETE /api/upload?path=/uploads/filename.jpg
-    // 我们使用路径参数方式
     const deleteUrl = `${API_BASE_URL}${API_ENDPOINTS.DELETE_FILE}${filePath}`
 
     const response = await fetch(deleteUrl, {
       method: 'DELETE',
-      headers
+      headers: getAuthHeaders()
     })
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: '删除失败' }))
-      throw new Error(error.error || `HTTP error! status: ${response.status}`)
+      throw new Error(error.error || `删除失败 (${response.status})`)
     }
 
     return response.json()

@@ -142,11 +142,27 @@ PathFinder/
 
 ### 配置环境变量
 
-在项目根目录创建 `.env` 文件（可选，默认使用 `http://localhost:3001/api`）：
+#### ⚠️ 重要：两个环境都需要配置
+
+**开发环境**：创建 `.env.development` 文件（连接本地后端）
 
 ```env
 VITE_API_BASE_URL=http://localhost:3001/api
 ```
+
+**生产环境**：在 Railway Variables 中配置（连接生产后端）
+
+```
+VITE_API_BASE_URL=https://你的后端地址.up.railway.app/api
+```
+
+**为什么都需要配置**：
+- ✅ 开发环境：明确指定本地后端地址
+- ✅ 生产环境：每个部署的后端地址可能不同，避免硬编码
+
+**详细说明**：
+- 📖 [环境变量说明.md](./环境变量说明.md) - 环境变量使用指南
+- 📖 [环境配置最佳实践.md](./环境配置最佳实践.md) - 配置最佳实践
 
 ### 安装依赖
 
@@ -162,7 +178,7 @@ pnpm dev
 
 开发服务器将在 http://localhost:3000 启动
 
-**注意**：确保后端API服务已启动（默认运行在 http://localhost:3001）
+**注意**：确保后端API服务已启动（Railway 部署）
 
 ### 构建生产版本
 
@@ -313,10 +329,10 @@ const { theme, toggleTheme, isDark, isLight } = useTheme();
 API基础URL通过环境变量配置：
 
 ```env
-VITE_API_BASE_URL=http://localhost:3001/api
+VITE_API_BASE_URL=https://你的后端地址.up.railway.app/api
 ```
 
-如果不配置，默认使用 `http://localhost:3001/api`
+如果不配置，默认使用代码中的默认值（Railway 后端地址）
 
 ### 使用API服务
 
@@ -400,7 +416,7 @@ logger.error('错误');
 
 ### API连接失败
 
-- 确保后端服务已启动（默认运行在 http://localhost:3001）
+- 确保后端服务已启动（Railway 部署）
 - 检查 `.env` 文件中的 `VITE_API_BASE_URL` 配置是否正确
 - 检查浏览器控制台的网络请求，查看具体的错误信息
 - 确认后端CORS配置允许前端域名访问

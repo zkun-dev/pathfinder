@@ -100,21 +100,8 @@ export function useTheme() {
     return themeInstance
   }
 
-  // 创建新实例
+  // 创建新实例（内部已经通过 onMounted 处理系统主题监听）
   themeInstance = createTheme()
-
-  // 初始化系统主题监听（只需要一次）
-  if (window.matchMedia) {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-
-    // 现代浏览器
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleSystemThemeChange)
-    } else {
-      // 旧浏览器兼容
-      mediaQuery.addListener(handleSystemThemeChange)
-    }
-  }
 
   return themeInstance
 }

@@ -3,7 +3,9 @@
  * 在生产环境自动禁用 console 输出
  */
 
-const isDevelopment = import.meta.env.DEV;
+import { isDev } from '@/config/env';
+
+const isDevelopment = isDev;
 
 export const logger = {
   log: (...args: any[]) => {

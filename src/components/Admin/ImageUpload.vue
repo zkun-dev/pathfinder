@@ -212,7 +212,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   multiple: false,
   maxCount: 100,
-  maxSizeMB: 5,
+  maxSizeMB: 10, // 与后端一致，10MB
   required: false,
   icon: 'fa-solid fa-image',
 });
@@ -252,25 +252,26 @@ const iconClass = computed(() => [
   'text-xs mr-1.5',
 ]);
 
+import { validateFileType as validateFileTypeUtil, validateFileSize as validateFileSizeUtil, toFullUrl } from '@/utils/upload'
+
 // 验证文件大小
 const validateFileSize = (file: File): boolean => {
-  const maxSize = props.maxSizeMB * 1024 * 1024; // 转换为字节
-  if (file.size > maxSize) {
-    error.value = `文件大小不能超过 ${props.maxSizeMB}MB`;
-    return false;
+  const maxSize = props.maxSizeMB * 1024 * 1024 // 转换为字节
+  if (!validateFileSizeUtil(file, maxSize)) {
+    error.value = `文件大小不能超过 ${props.maxSizeMB}MB`
+    return false
   }
-  return true;
-};
+  return true
+}
 
 // 验证文件类型
 const validateFileType = (file: File): boolean => {
-  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-  if (!validTypes.includes(file.type)) {
-    error.value = '只支持 JPG、PNG、GIF、WEBP 格式的图片';
-    return false;
+  if (!validateFileTypeUtil(file)) {
+    error.value = '只支持 JPG、PNG、GIF、WebP 格式的图片'
+    return false
   }
-  return true;
-};
+  return true
+}
 
 // 上传单个文件
 const uploadFile = async (file: File): Promise<string> => {
@@ -285,18 +286,9 @@ const uploadFile = async (file: File): Promise<string> => {
   error.value = null;
 
   try {
-    const response = await uploadApi.uploadFile(file);
-    let url = response.url;
-    
-    // 如果返回的是相对路径，需要转换为完整URL
-    if (url && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('data:')) {
-      // 从API_BASE_URL提取基础URL
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
-      const baseUrl = apiBaseUrl.replace('/api', '');
-      url = url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
-    }
-    
-    return url;
+    const response = await uploadApi.uploadFile(file)
+    // 使用工具函数将相对路径转换为完整 URL
+    return toFullUrl(response.url)
   } catch (err: any) {
     error.value = err.message || '上传失败';
     throw err;
