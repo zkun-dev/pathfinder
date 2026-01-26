@@ -34,15 +34,20 @@ RUN ls -la /app/dist/static || (echo "构建失败：dist/static 目录不存在
 # 生产阶段 - 使用 Nginx 提供静态文件服务
 FROM nginx:alpine
 
+# 安装 envsubst（用于替换环境变量）
+RUN apk add --no-cache gettext
+
 # 复制构建产物到 Nginx 的 html 目录
 # 构建产物位于 dist/static 目录（包含 index.html 和 assets 目录）
 COPY --from=builder /app/dist/static /usr/share/nginx/html
 
-# 复制 Nginx 配置文件（用于 SPA 路由支持）
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 复制 Nginx 配置文件模板（用于 SPA 路由支持）
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-# 暴露端口 80（Nginx 默认端口）
-EXPOSE 80
+# Railway 会自动设置 PORT 环境变量，默认使用 80
+# 暴露端口（Railway 会自动映射）
+EXPOSE ${PORT:-80}
 
-# 启动 Nginx（前台运行，保持容器运行）
-CMD ["nginx", "-g", "daemon off;"]
+# 启动脚本：使用 envsubst 替换环境变量后启动 Nginx
+# Railway 会自动设置 PORT 环境变量，如果没有设置则使用 80
+CMD export PORT=${PORT:-80} && envsubst '$$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
