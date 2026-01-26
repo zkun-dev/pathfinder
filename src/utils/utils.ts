@@ -1,4 +1,5 @@
 import { twMerge } from 'tailwind-merge'
+import { logger } from './logger'
 
 /**
  * 合并 Tailwind CSS 类名
@@ -202,7 +203,7 @@ export function snakeToCamel(str: string): string {
  * localStorage 工具
  */
 export const storage = {
-  get: <T = any>(key: string, defaultValue?: T): T | null => {
+  get: <T = unknown>(key: string, defaultValue?: T): T | null => {
     try {
       const item = localStorage.getItem(key)
       return item ? JSON.parse(item) : defaultValue || null
@@ -211,11 +212,16 @@ export const storage = {
     }
   },
 
-  set: (key: string, value: any): void => {
+  set: (key: string, value: unknown): void => {
     try {
       localStorage.setItem(key, JSON.stringify(value))
     } catch (error) {
-      console.error('Failed to save to localStorage:', error)
+      // 使用 logger 而不是 console.error
+      if (error instanceof Error) {
+        logger.error('Failed to save to localStorage', error)
+      } else {
+        logger.error('Failed to save to localStorage', new Error(String(error)))
+      }
     }
   },
 

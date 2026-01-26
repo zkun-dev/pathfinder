@@ -114,7 +114,8 @@ const router = createRouter({
 
 // 路由切换后，强制重置滚动位置
 router.afterEach(() => {
-  setTimeout(() => {
+  // 使用 requestAnimationFrame 确保在 DOM 更新后执行
+  requestAnimationFrame(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
@@ -123,7 +124,7 @@ router.afterEach(() => {
     if (rootElement) {
       rootElement.scrollTop = 0;
     }
-  }, 0);
+  });
 });
 
 // 路由守卫
@@ -132,7 +133,10 @@ router.beforeEach((to, _from, next) => {
 
   // 需要认证的路由
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    next({ name: 'AdminLogin', query: { redirect: to.fullPath } });
+    next({ 
+      name: 'AdminLogin', 
+      query: { redirect: to.fullPath } 
+    });
     return;
   }
 

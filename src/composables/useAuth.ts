@@ -17,8 +17,10 @@ export function useAuth() {
       user.value = response.user
       storage.setRaw('token', response.token)
       storage.set('user', response.user)
-    } catch (error: any) {
-      throw new Error(error.message || '登录失败')
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : '登录失败'
+      logger.error('登录失败', error)
+      throw new Error(errorMessage)
     }
   }
 
@@ -34,8 +36,9 @@ export function useAuth() {
       const me = await authApi.getMe()
       user.value = me
       storage.set('user', me)
-    } catch (error: any) {
+    } catch (error) {
       // 如果获取用户信息失败，清除token
+      logger.error('获取用户信息失败', error)
       logout()
       throw error
     }

@@ -120,21 +120,27 @@ async function request<T>(
 }
 
 // 创建JSON请求体的辅助函数
-const createJsonBody = (data: any) => JSON.stringify(data)
+const createJsonBody = (data: unknown): string => JSON.stringify(data)
 
 // 构建查询字符串
-function buildQueryString(params: Record<string, any>): string {
+function buildQueryString(params: Record<string, unknown> | undefined | null): string {
+  if (!params) {
+    return ''
+  }
+  
   const searchParams = new URLSearchParams()
 
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
-      if (Array.isArray(value)) {
-        value.forEach(v => searchParams.append(key, v.toString()))
-      } else if (typeof value === 'boolean') {
-        searchParams.append(key, value.toString())
-      } else {
-        searchParams.append(key, value.toString())
-      }
+    if (value === undefined || value === null || value === '') {
+      return
+    }
+    
+    if (Array.isArray(value)) {
+      value.forEach(v => searchParams.append(key, String(v)))
+    } else if (typeof value === 'boolean') {
+      searchParams.append(key, String(value))
+    } else {
+      searchParams.append(key, String(value))
     }
   })
 
@@ -200,7 +206,7 @@ export const skillApi = {
 // 项目API
 export const projectApi = {
   getProjects: async (params?: ProjectsQueryParams): Promise<PaginatedResponse<Project>> => {
-    const query = buildQueryString(params || {})
+    const query = buildQueryString(params as Record<string, unknown>)
     return request<PaginatedResponse<Project>>(`${API_ENDPOINTS.PROJECTS}${query}`)
   },
 
@@ -263,7 +269,7 @@ export const experienceApi = {
 // 学习记录API
 export const learningApi = {
   getLearnings: async (params?: LearningsQueryParams): Promise<Learning[]> => {
-    const query = buildQueryString(params || {})
+    const query = buildQueryString(params as Record<string, unknown>)
     const response = await request<PaginatedResponse<Learning> | Learning[]>(
       `${API_ENDPOINTS.LEARNINGS}${query}`
     )
@@ -305,7 +311,7 @@ export const learningApi = {
 // 生活动态API
 export const lifeApi = {
   getLifePosts: async (params?: LifeQueryParams): Promise<PaginatedResponse<Life>> => {
-    const query = buildQueryString(params || {})
+    const query = buildQueryString(params as Record<string, unknown>)
     return request<PaginatedResponse<Life>>(`${API_ENDPOINTS.LIFE}${query}`)
   },
 
