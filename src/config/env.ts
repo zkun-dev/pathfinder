@@ -1,84 +1,109 @@
-/**
- * 环境配置
- * 统一管理开发/生产环境判断和配置
- */
+import { logger } from '@/utils/logger'
 
-/**
- * 当前环境模式
- * - development: 开发环境（pnpm dev）
- * - production: 生产环境（pnpm build）
- */
-export const MODE = import.meta.env.MODE;
+export interface EnvConfig {
+  API_BASE_URL: string
+  MODE: string
+  isDev: boolean
+  isProd: boolean
+  API_TIMEOUT: number
+  enableDebugLog: boolean
+  showDetailedErrors: boolean
+}
 
-/**
- * 是否是开发环境
- */
-export const isDev = import.meta.env.DEV;
-
-/**
- * 是否是生产环境
- */
-export const isProd = import.meta.env.PROD;
-
-/**
- * 环境变量配置
- */
-export const env = {
-  // API 基础地址
-  // ⚠️ 重要：生产环境必须在 Railway Variables 中设置 VITE_API_BASE_URL
-  // 默认值仅作为后备，实际应该通过环境变量设置
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://pathfinder-backend-production-3268.up.railway.app/api',
+export const MODE = import.meta.env.MODE
+export const isDev = import.meta.env.DEV
+export const isProd = import.meta.env.PROD
+const getApiBaseUrl = (): string => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL
   
-  // 当前环境模式
+  if (!envUrl) {
+    const envFile = isDev ? '.env.development' : '.env.production'
+    const platformHint = isProd 
+      ? '在部署平台（如 Railway/Vercel）的环境变量中设置，或'
+      : ''
+    const exampleUrl = isDev 
+      ? 'http://localhost:3001/api' 
+      : 'https://your-backend-domain.com/api'
+    
+    throw new Error(
+      `❌ 必须配置 VITE_API_BASE_URL 环境变量\n` +
+      `${platformHint}创建 ${envFile} 文件并设置：\n` +
+      `  VITE_API_BASE_URL=${exampleUrl}\n` +
+      `\n提示：必须使用完整的 URL（包含协议 http:// 或 https://）`
+    )
+  }
+
+  // 验证必须是完整 URL
+  try {
+    const url = new URL(envUrl)
+    
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      throw new Error('协议必须是 http 或 https')
+    }
+    
+    if (!url.pathname.endsWith('/api')) {
+      logger.warn(`VITE_API_BASE_URL 建议以 /api 结尾: ${url.pathname}`)
+    }
+    
+    return envUrl
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error(
+        `❌ VITE_API_BASE_URL 格式错误: ${envUrl}\n` +
+        `必须使用完整的 URL，例如：\n` +
+        `  - 开发环境: http://localhost:3001/api\n` +
+        `  - 生产环境: https://your-backend-domain.com/api`
+      )
+    }
+    throw error
+  }
+}
+
+const getApiTimeout = (): number => {
+  const timeout = import.meta.env.VITE_API_TIMEOUT
+  if (timeout) {
+    const parsed = parseInt(timeout, 10)
+    if (!isNaN(parsed) && parsed > 0) return parsed
+    logger.warn(`VITE_API_TIMEOUT 格式错误: ${timeout}`)
+  }
+  return isDev ? 30000 : 10000
+}
+
+const createEnvConfig = (): EnvConfig => ({
+  API_BASE_URL: getApiBaseUrl(),
   MODE,
-  
-  // 是否是开发环境
   isDev,
-  
-  // 是否是生产环境
   isProd,
-} as const;
+  API_TIMEOUT: getApiTimeout(),
+  enableDebugLog: isDev,
+  showDetailedErrors: isDev,
+})
 
-/**
- * 开发环境配置
- */
-export const devConfig = {
-  // 开发环境 API 地址
-  // 默认使用本地后端，可通过 .env.development 或 Railway Variables 覆盖
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
-  
-  // 是否启用调试日志
-  enableDebugLog: true,
-  
-  // 是否显示详细错误信息
-  showDetailedErrors: true,
-} as const;
+export const env: EnvConfig = createEnvConfig()
 
-/**
- * 生产环境配置
- */
-export const prodConfig = {
-  // 生产环境 API 地址
-  // ⚠️ 重要：必须在 Railway Variables 中设置 VITE_API_BASE_URL
-  // 如果不设置，会使用下面的默认值（仅作为后备）
-  // 注意：默认值包含数字后缀，实际使用时应该通过环境变量设置正确的后端地址
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://pathfinder-backend-production-3268.up.railway.app/api',
-  
-  // 是否启用调试日志
-  enableDebugLog: false,
-  
-  // 是否显示详细错误信息
-  showDetailedErrors: false,
-} as const;
+export const config = {
+  API_BASE_URL: env.API_BASE_URL,
+  API_TIMEOUT: env.API_TIMEOUT,
+  enableDebugLog: env.enableDebugLog,
+  showDetailedErrors: env.showDetailedErrors,
+} as const
 
-/**
- * 根据环境获取配置
- */
-export const getConfig = () => {
-  return isDev ? devConfig : prodConfig;
-};
-
-/**
- * 当前配置
- */
-export const config = getConfig();
+export const validateEnv = (): void => {
+  try {
+    const apiBaseUrl = getApiBaseUrl()
+    const timeout = getApiTimeout()
+    
+    if (timeout < 1000) {
+      logger.warn('API_TIMEOUT 设置过小，建议至少 1000ms')
+    }
+    
+    if (isDev) {
+      logger.log('开发环境配置', { apiBaseUrl, timeout, mode: MODE })
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      logger.error('环境配置错误', error.message)
+      throw error
+    }
+  }
+}

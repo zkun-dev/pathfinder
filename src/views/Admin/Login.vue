@@ -259,14 +259,21 @@ const showPassword = ref(false);
 
 const handleLogin = async () => {
   try {
-    loading.value = true;
-    error.value = null;
-    await login(form.value);
-    router.push('/admin/dashboard');
+    loading.value = true
+    error.value = null
+    await login(form.value)
+    
+    // 处理重定向：如果有 redirect 参数，跳转到指定页面；否则跳转到仪表盘
+    const redirect = router.currentRoute.value.query.redirect as string | undefined
+    if (redirect && redirect.startsWith('/admin')) {
+      router.push(redirect)
+    } else {
+      router.push('/admin/dashboard')
+    }
   } catch (err: any) {
-    error.value = err.message || '登录失败，请检查用户名和密码';
+    error.value = err.message || '登录失败，请检查用户名和密码'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 </script>

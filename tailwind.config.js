@@ -1,7 +1,3 @@
-/** WARNING: DON'T EDIT THIS FILE */
-/** WARNING: DON'T EDIT THIS FILE */
-/** WARNING: DON'T EDIT THIS FILE */
-
 /** @type {import('tailwindcss').Config} */
 
 export default {

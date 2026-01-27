@@ -3,6 +3,7 @@
  */
 
 import { API_BASE_URL } from '@/config/api'
+import { formatFileSize } from './utils'
 
 /**
  * 文件大小限制（字节）- 10MB
@@ -92,15 +93,5 @@ export function validateFileSize(file: File, maxSize: number = MAX_FILE_SIZE): b
   return file.size <= maxSize
 }
 
-/**
- * 格式化文件大小（字节转换为可读格式）
- */
-export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B'
-  
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`
-}
+// 导出 formatFileSize，从 utils 导入以保持向后兼容
+export { formatFileSize }

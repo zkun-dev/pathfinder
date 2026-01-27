@@ -42,36 +42,18 @@ function createTheme() {
     window.dispatchEvent(new CustomEvent('theme-change', { detail: theme.value }))
   }
 
-  // 系统主题变化处理器
-  const handleSystemThemeChange = (e: MediaQueryListEvent) => {
-    // 只有在没有手动设置主题时才跟随系统
-    if (!storage.getRaw('theme')) {
-      theme.value = e.matches ? 'dark' : 'light'
-    }
-  }
-
-  // 监听系统主题变化
-  const watchSystemTheme = () => {
-    if (window.matchMedia) {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-
-      // 现代浏览器
-      if (mediaQuery.addEventListener) {
-        mediaQuery.addEventListener('change', handleSystemThemeChange)
-      } else {
-        // 旧浏览器兼容
-        mediaQuery.addListener(handleSystemThemeChange)
-      }
-    }
-  }
-
-  // 监听主题变化并应用
   watch(theme, applyTheme, { immediate: true })
 
-  // 组件挂载时监听系统主题
   onMounted(() => {
-    watchSystemTheme()
-    applyTheme()
+    if (window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      const handler = (e: MediaQueryListEvent) => {
+        if (!storage.getRaw('theme')) {
+          theme.value = e.matches ? 'dark' : 'light'
+        }
+      }
+      mediaQuery.addEventListener?.('change', handler) || mediaQuery.addListener?.(handler)
+    }
   })
 
   const toggleTheme = () => {

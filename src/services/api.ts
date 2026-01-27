@@ -18,56 +18,46 @@ import type {
   UploadResponse
 } from '@/types'
 
-// 请求拦截器：添加认证token
-const getAuthHeaders = (skipContentType: boolean = false): HeadersInit => {
-  const token = localStorage.getItem('token')
+const getAuthHeaders = (skipContentType = false): HeadersInit => {
   const headers: HeadersInit = {}
-
-  // 对于文件上传，不设置 Content-Type，让浏览器自动设置（包含 boundary）
+  const token = localStorage.getItem('token')
+  
   if (!skipContentType) {
     headers['Content-Type'] = 'application/json'
   }
-
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }
-
+  
   return headers
 }
 
-// 通用请求函数
 async function request<T>(
   endpoint: string,
   options: RequestInit = {},
   customHeaders?: HeadersInit
 ): Promise<T> {
+  const method = options.method || 'GET'
   const url = `${API_BASE_URL}${endpoint}`
-  
-  // 如果是 FormData，不设置默认的 Content-Type
   const isFormData = options.body instanceof FormData
-  const defaultHeaders = getAuthHeaders(isFormData)
+  
+  const headers: Record<string, string> = {
+    ...getAuthHeaders(isFormData) as Record<string, string>,
+    ...customHeaders as Record<string, string>,
+    ...options.headers as Record<string, string>
+  }
+  
+  if (isFormData) delete headers['Content-Type']
 
   try {
-    logger.debug(`API Request: ${options.method || 'GET'} ${url}`)
-
-    // 合并 headers，但如果是 FormData 且没有显式设置 Content-Type，则让浏览器自动设置
-    const mergedHeaders: Record<string, string> = {
-      ...defaultHeaders as Record<string, string>,
-      ...customHeaders as Record<string, string>,
-      ...options.headers as Record<string, string>
-    }
-    
-    // 如果是 FormData，删除手动设置的 Content-Type（让浏览器自动设置）
-    if (isFormData && mergedHeaders['Content-Type']?.includes('multipart/form-data')) {
-      delete mergedHeaders['Content-Type']
-    }
+    logger.debug(`API Request: ${method} ${url}`)
 
     const response = await fetch(url, {
       ...options,
-      headers: mergedHeaders
+      method,
+      headers,
     })
 
-    // 处理 204 No Content 响应
     if (response.status === 204) {
       return null as T
     }
@@ -82,282 +72,169 @@ async function request<T>(
 
       logger.error(`API Error: ${response.status} - ${errorData.error}`, errorData)
 
-      // 根据状态码抛出特定错误
       if (response.status === 401) {
-        // 清除无效token
         storage.remove('token')
         storage.remove('user')
         throw new Error('登录已过期，请重新登录')
       }
 
-      if (response.status === 403) {
-        throw new Error('权限不足，无法访问该资源')
-      }
-
-      if (response.status === 404) {
-        throw new Error('请求的资源不存在')
-      }
-
-      if (response.status >= 500) {
-        throw new Error('服务器内部错误，请稍后重试')
-      }
+      if (response.status === 403) throw new Error('权限不足，无法访问该资源')
+      if (response.status === 404) throw new Error('请求的资源不存在')
+      if (response.status >= 500) throw new Error('服务器内部错误，请稍后重试')
 
       throw new Error(errorData.error || errorData.message || `请求失败 (${response.status})`)
     }
 
     logger.debug(`API Response: ${response.status} - ${endpoint}`)
-    return responseData
+    return responseData as T
   } catch (error) {
     if (error instanceof Error) {
-      logger.error(`Request failed: ${options.method || 'GET'} ${url}`, error)
+      if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+        logger.error(`Network error: ${method} ${url}`, error)
+        throw new Error(`无法连接到后端服务器 ${API_BASE_URL}`)
+      }
       throw error
     }
-
-    const networkError = new Error('网络连接失败，请检查网络设置')
-    logger.error(`Network error: ${options.method || 'GET'} ${url}`, networkError)
-    throw networkError
+    throw new Error('网络连接失败')
   }
 }
 
-// 创建JSON请求体的辅助函数
 const createJsonBody = (data: unknown): string => JSON.stringify(data)
 
-// 构建查询字符串
-function buildQueryString(params: Record<string, unknown> | undefined | null): string {
-  if (!params) {
-    return ''
-  }
+const buildQueryString = (params: Record<string, unknown> | undefined | null): string => {
+  if (!params) return ''
   
   const searchParams = new URLSearchParams()
-
   Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === null || value === '') {
-      return
-    }
+    if (value === undefined || value === null || value === '') return
     
     if (Array.isArray(value)) {
       value.forEach(v => searchParams.append(key, String(v)))
-    } else if (typeof value === 'boolean') {
-      searchParams.append(key, String(value))
     } else {
       searchParams.append(key, String(value))
     }
   })
-
-  const queryString = searchParams.toString()
-  return queryString ? `?${queryString}` : ''
+  
+  const query = searchParams.toString()
+  return query ? `?${query}` : ''
 }
 
-// 认证相关API
 export const authApi = {
-  login: async (data: LoginRequest): Promise<LoginResponse> => {
-    return request<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
-      method: 'POST',
-      body: createJsonBody(data)
-    })
-  },
+  login: (data: LoginRequest) => request<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
+    method: 'POST',
+    body: createJsonBody(data)
+  }),
 
-  getMe: async (): Promise<{ id: number; username: string; email: string }> => {
-    return request(API_ENDPOINTS.AUTH.ME)
-  }
+  getMe: () => request<{ id: number; username: string; email: string }>(API_ENDPOINTS.AUTH.ME)
 }
 
-// 个人信息API
 export const profileApi = {
-  getProfile: async (): Promise<Profile> => {
-    return request<Profile>(API_ENDPOINTS.PROFILE)
-  },
-
-  updateProfile: async (data: Partial<Profile>): Promise<Profile> => {
-    return request<Profile>(API_ENDPOINTS.PROFILE, {
-      method: 'PUT',
-      body: createJsonBody(data)
-    })
-  }
+  getProfile: () => request<Profile>(API_ENDPOINTS.PROFILE),
+  updateProfile: (data: Partial<Profile>) => request<Profile>(API_ENDPOINTS.PROFILE, {
+    method: 'PUT',
+    body: createJsonBody(data)
+  })
 }
 
-// 技能API
 export const skillApi = {
-  getSkills: async (): Promise<Skill[]> => {
-    return request<Skill[]>(API_ENDPOINTS.SKILLS)
-  },
-
-  createSkill: async (data: Partial<Skill>): Promise<Skill> => {
-    return request<Skill>(API_ENDPOINTS.SKILLS, {
-      method: 'POST',
-      body: createJsonBody(data)
-    })
-  },
-
-  updateSkill: async (id: number, data: Partial<Skill>): Promise<Skill> => {
-    return request<Skill>(`${API_ENDPOINTS.SKILLS}/${id}`, {
-      method: 'PUT',
-      body: createJsonBody(data)
-    })
-  },
-
-  deleteSkill: async (id: number): Promise<{ message: string }> => {
-    return request<{ message: string }>(`${API_ENDPOINTS.SKILLS}/${id}`, {
-      method: 'DELETE'
-    })
-  }
+  getSkills: () => request<Skill[]>(API_ENDPOINTS.SKILLS),
+  createSkill: (data: Partial<Skill>) => request<Skill>(API_ENDPOINTS.SKILLS, {
+    method: 'POST',
+    body: createJsonBody(data)
+  }),
+  updateSkill: (id: number, data: Partial<Skill>) => request<Skill>(`${API_ENDPOINTS.SKILLS}/${id}`, {
+    method: 'PUT',
+    body: createJsonBody(data)
+  }),
+  deleteSkill: (id: number) => request<{ message: string }>(`${API_ENDPOINTS.SKILLS}/${id}`, {
+    method: 'DELETE'
+  })
 }
 
-// 项目API
 export const projectApi = {
-  getProjects: async (params?: ProjectsQueryParams): Promise<PaginatedResponse<Project>> => {
+  getProjects: (params?: ProjectsQueryParams) => {
     const query = buildQueryString(params as Record<string, unknown>)
     return request<PaginatedResponse<Project>>(`${API_ENDPOINTS.PROJECTS}${query}`)
   },
-
-  getProject: async (id: number): Promise<Project> => {
-    return request<Project>(`${API_ENDPOINTS.PROJECTS}/${id}`)
-  },
-
-  createProject: async (data: Partial<Project>): Promise<Project> => {
-    return request<Project>(API_ENDPOINTS.PROJECTS, {
-      method: 'POST',
-      body: createJsonBody(data)
-    })
-  },
-
-  updateProject: async (id: number, data: Partial<Project>): Promise<Project> => {
-    return request<Project>(`${API_ENDPOINTS.PROJECTS}/${id}`, {
-      method: 'PUT',
-      body: createJsonBody(data)
-    })
-  },
-
-  deleteProject: async (id: number): Promise<{ message: string }> => {
-    return request<{ message: string }>(`${API_ENDPOINTS.PROJECTS}/${id}`, {
-      method: 'DELETE'
-    })
-  }
+  getProject: (id: number) => request<Project>(`${API_ENDPOINTS.PROJECTS}/${id}`),
+  createProject: (data: Partial<Project>) => request<Project>(API_ENDPOINTS.PROJECTS, {
+    method: 'POST',
+    body: createJsonBody(data)
+  }),
+  updateProject: (id: number, data: Partial<Project>) => request<Project>(`${API_ENDPOINTS.PROJECTS}/${id}`, {
+    method: 'PUT',
+    body: createJsonBody(data)
+  }),
+  deleteProject: (id: number) => request<{ message: string }>(`${API_ENDPOINTS.PROJECTS}/${id}`, {
+    method: 'DELETE'
+  })
 }
 
-// 工作经历API
 export const experienceApi = {
-  getExperiences: async (): Promise<Experience[]> => {
-    return request<Experience[]>(API_ENDPOINTS.EXPERIENCES)
-  },
-
-  getExperience: async (id: number): Promise<Experience> => {
-    return request<Experience>(`${API_ENDPOINTS.EXPERIENCES}/${id}`)
-  },
-
-  createExperience: async (data: Partial<Experience>): Promise<Experience> => {
-    return request<Experience>(API_ENDPOINTS.EXPERIENCES, {
-      method: 'POST',
-      body: createJsonBody(data)
-    })
-  },
-
-  updateExperience: async (id: number, data: Partial<Experience>): Promise<Experience> => {
-    return request<Experience>(`${API_ENDPOINTS.EXPERIENCES}/${id}`, {
-      method: 'PUT',
-      body: createJsonBody(data)
-    })
-  },
-
-  deleteExperience: async (id: number): Promise<{ message: string }> => {
-    return request<{ message: string }>(`${API_ENDPOINTS.EXPERIENCES}/${id}`, {
-      method: 'DELETE'
-    })
-  }
+  getExperiences: () => request<Experience[]>(API_ENDPOINTS.EXPERIENCES),
+  getExperience: (id: number) => request<Experience>(`${API_ENDPOINTS.EXPERIENCES}/${id}`),
+  createExperience: (data: Partial<Experience>) => request<Experience>(API_ENDPOINTS.EXPERIENCES, {
+    method: 'POST',
+    body: createJsonBody(data)
+  }),
+  updateExperience: (id: number, data: Partial<Experience>) => request<Experience>(`${API_ENDPOINTS.EXPERIENCES}/${id}`, {
+    method: 'PUT',
+    body: createJsonBody(data)
+  }),
+  deleteExperience: (id: number) => request<{ message: string }>(`${API_ENDPOINTS.EXPERIENCES}/${id}`, {
+    method: 'DELETE'
+  })
 }
 
-// 学习记录API
 export const learningApi = {
-  getLearnings: async (params?: LearningsQueryParams): Promise<Learning[]> => {
+  getLearnings: async (params?: LearningsQueryParams) => {
     const query = buildQueryString(params as Record<string, unknown>)
-    const response = await request<PaginatedResponse<Learning> | Learning[]>(
-      `${API_ENDPOINTS.LEARNINGS}${query}`
-    )
-
-    // 处理分页响应或直接数组
-    if (Array.isArray(response)) {
-      return response
-    }
-
-    // 如果是分页响应，返回 data 数组
-    return (response as PaginatedResponse<Learning>).data
+    const response = await request<PaginatedResponse<Learning> | Learning[]>(`${API_ENDPOINTS.LEARNINGS}${query}`)
+    return Array.isArray(response) ? response : response.data
   },
-
-  getLearning: async (id: number): Promise<Learning> => {
-    return request<Learning>(`${API_ENDPOINTS.LEARNINGS}/${id}`)
-  },
-
-  createLearning: async (data: Partial<Learning>): Promise<Learning> => {
-    return request<Learning>(API_ENDPOINTS.LEARNINGS, {
-      method: 'POST',
-      body: createJsonBody(data)
-    })
-  },
-
-  updateLearning: async (id: number, data: Partial<Learning>): Promise<Learning> => {
-    return request<Learning>(`${API_ENDPOINTS.LEARNINGS}/${id}`, {
-      method: 'PUT',
-      body: createJsonBody(data)
-    })
-  },
-
-  deleteLearning: async (id: number): Promise<{ message: string }> => {
-    return request<{ message: string }>(`${API_ENDPOINTS.LEARNINGS}/${id}`, {
-      method: 'DELETE'
-    })
-  }
+  getLearning: (id: number) => request<Learning>(`${API_ENDPOINTS.LEARNINGS}/${id}`),
+  createLearning: (data: Partial<Learning>) => request<Learning>(API_ENDPOINTS.LEARNINGS, {
+    method: 'POST',
+    body: createJsonBody(data)
+  }),
+  updateLearning: (id: number, data: Partial<Learning>) => request<Learning>(`${API_ENDPOINTS.LEARNINGS}/${id}`, {
+    method: 'PUT',
+    body: createJsonBody(data)
+  }),
+  deleteLearning: (id: number) => request<{ message: string }>(`${API_ENDPOINTS.LEARNINGS}/${id}`, {
+    method: 'DELETE'
+  })
 }
 
-// 生活动态API
 export const lifeApi = {
-  getLifePosts: async (params?: LifeQueryParams): Promise<PaginatedResponse<Life>> => {
+  getLifePosts: (params?: LifeQueryParams) => {
     const query = buildQueryString(params as Record<string, unknown>)
     return request<PaginatedResponse<Life>>(`${API_ENDPOINTS.LIFE}${query}`)
   },
-
-  getLifePost: async (id: number): Promise<Life> => {
-    return request<Life>(`${API_ENDPOINTS.LIFE}/${id}`)
-  },
-
-  createLifePost: async (data: Partial<Life>): Promise<Life> => {
-    return request<Life>(API_ENDPOINTS.LIFE, {
-      method: 'POST',
-      body: createJsonBody(data)
-    })
-  },
-
-  updateLifePost: async (id: number, data: Partial<Life>): Promise<Life> => {
-    return request<Life>(`${API_ENDPOINTS.LIFE}/${id}`, {
-      method: 'PUT',
-      body: createJsonBody(data)
-    })
-  },
-
-  deleteLifePost: async (id: number): Promise<{ message: string }> => {
-    return request<{ message: string }>(`${API_ENDPOINTS.LIFE}/${id}`, {
-      method: 'DELETE'
-    })
-  }
+  getLifePost: (id: number) => request<Life>(`${API_ENDPOINTS.LIFE}/${id}`),
+  createLifePost: (data: Partial<Life>) => request<Life>(API_ENDPOINTS.LIFE, {
+    method: 'POST',
+    body: createJsonBody(data)
+  }),
+  updateLifePost: (id: number, data: Partial<Life>) => request<Life>(`${API_ENDPOINTS.LIFE}/${id}`, {
+    method: 'PUT',
+    body: createJsonBody(data)
+  }),
+  deleteLifePost: (id: number) => request<{ message: string }>(`${API_ENDPOINTS.LIFE}/${id}`, {
+    method: 'DELETE'
+  })
 }
 
 import { extractFilePath, validateFileType, validateFileSize, MAX_FILE_SIZE, ALLOWED_IMAGE_TYPES } from '@/utils/upload'
 
-// 文件上传API
 export const uploadApi = {
-  uploadFile: async (file: File): Promise<UploadResponse> => {
-    if (!file) {
-      throw new Error('请选择要上传的文件')
-    }
-
-    // 验证文件类型
+  uploadFile: async (file: File) => {
+    if (!file) throw new Error('请选择要上传的文件')
     if (!validateFileType(file, ALLOWED_IMAGE_TYPES)) {
       throw new Error('不支持的文件类型，仅支持 JPG、PNG、GIF、WebP 格式')
     }
-
-    // 验证文件大小
     if (!validateFileSize(file, MAX_FILE_SIZE)) {
-      const maxSizeMB = MAX_FILE_SIZE / (1024 * 1024)
-      throw new Error(`文件大小不能超过 ${maxSizeMB}MB`)
+      throw new Error(`文件大小不能超过 ${MAX_FILE_SIZE / (1024 * 1024)}MB`)
     }
 
     const formData = new FormData()
@@ -365,16 +242,10 @@ export const uploadApi = {
 
     try {
       logger.debug(`Uploading file: ${file.name} (${file.size} bytes)`)
-
-      const response = await request<UploadResponse>(
-        API_ENDPOINTS.UPLOAD,
-        {
-          method: 'POST',
-          body: formData
-          // request 函数会自动处理 FormData，不设置 Content-Type
-        }
-      )
-
+      const response = await request<UploadResponse>(API_ENDPOINTS.UPLOAD, {
+        method: 'POST',
+        body: formData
+      })
       logger.info(`File uploaded successfully: ${response.url}`)
       return response
     } catch (error) {
@@ -383,12 +254,9 @@ export const uploadApi = {
     }
   },
 
-  deleteFile: async (url: string): Promise<{ message: string }> => {
-    // 使用工具函数提取文件路径
+  deleteFile: async (url: string) => {
     const filePath = extractFilePath(url)
-
     const deleteUrl = `${API_BASE_URL}${API_ENDPOINTS.DELETE_FILE}${filePath}`
-
     const response = await fetch(deleteUrl, {
       method: 'DELETE',
       headers: getAuthHeaders()

@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import { useAuth } from '@/composables/useAuth';
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -109,45 +109,35 @@ const routes: RouteRecordRaw[] = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-});
+  routes,
+})
 
-// 路由切换后，强制重置滚动位置
 router.afterEach(() => {
-  // 使用 requestAnimationFrame 确保在 DOM 更新后执行
   requestAnimationFrame(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    
-    const rootElement = document.getElementById('root');
-    if (rootElement) {
-      rootElement.scrollTop = 0;
-    }
-  });
-});
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  })
+})
 
 // 路由守卫
 router.beforeEach((to, _from, next) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth()
 
   // 需要认证的路由
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    next({ 
-      name: 'AdminLogin', 
-      query: { redirect: to.fullPath } 
-    });
-    return;
+    next({
+      name: 'AdminLogin',
+      query: { redirect: to.fullPath },
+    })
+    return
   }
 
   // 已登录用户访问登录页，重定向到仪表盘
   if (to.meta.requiresGuest && isAuthenticated.value) {
-    next({ name: 'AdminDashboard' });
-    return;
+    next({ name: 'AdminDashboard' })
+    return
   }
 
-  next();
-});
+  next()
+})
 
-
-export default router;
+export default router
