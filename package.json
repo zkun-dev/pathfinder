@@ -10,7 +10,7 @@
   "scripts": {
     "dev:client": "vite --host --port 3000",
     "dev": "pnpm dev:client",
-    "build:client": "vite build --outDir dist/static",
+    "build:client": "vite build --mode production --outDir dist/static",
     "build": "pnpm build:client",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
