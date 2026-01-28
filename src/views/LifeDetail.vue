@@ -215,10 +215,6 @@
               v-motion
               :initial="{ opacity: 0, y: 30 }"
               :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
-              :class="[
-                'prose prose-lg max-w-none',
-                isDark ? 'prose-invert' : '',
-              ]"
             >
               <div
                 :class="[
@@ -228,14 +224,13 @@
                     : 'bg-white/80 border-gray-200',
                 ]"
               >
-                <p
+                <div 
+                  v-html="formatMarkdown(life.content)"
                   :class="[
-                    'text-lg leading-relaxed whitespace-pre-line transition-colors',
-                    isDark ? 'text-gray-300' : 'text-gray-700',
+                    'prose prose-lg max-w-none',
+                    isDark ? 'prose-invert' : '',
                   ]"
-                >
-                  {{ life.content }}
-                </p>
+                ></div>
               </div>
             </div>
 
@@ -448,6 +443,7 @@ import Header from '@/components/Header.vue';
 import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import { lifeApi } from '@/services/api';
 import { logger } from '@/utils/logger';
+import { renderMarkdown } from '@/utils/markdown';
 import type { Life } from '@/types';
 
 const ThreeDBackground = defineAsyncComponent(() =>
@@ -482,6 +478,10 @@ const formatDate = (dateString: string) => {
     month: 'long',
     day: 'numeric',
   });
+};
+
+const formatMarkdown = (content: string) => {
+  return renderMarkdown(content);
 };
 
 const nextImage = () => {

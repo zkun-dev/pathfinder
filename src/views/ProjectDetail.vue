@@ -521,6 +521,7 @@ import Header from '@/components/Header.vue';
 import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import { projectApi } from '@/services/api';
 import { logger } from '@/utils/logger';
+import { renderMarkdown } from '@/utils/markdown';
 import type { Project } from '@/types';
 
 const ThreeDBackground = defineAsyncComponent(() =>
@@ -557,11 +558,7 @@ const formatDate = (dateString: string) => {
 };
 
 const formatMarkdown = (content: string) => {
-  return content
-    .replace(/\n/g, '<br>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/`(.*?)`/g, '<code class="px-2 py-1 rounded bg-gray-200 dark:bg-gray-700">$1</code>');
+  return renderMarkdown(content);
 };
 
 const scrollToSection = (sectionId: string) => {

@@ -314,8 +314,8 @@ const fetchData = async () => {
     skills.value = Array.isArray(skillsData) ? skillsData.slice(0, 6) : []
     // 项目：只显示一行（3个）
     projects.value = Array.isArray(projectsData.data) ? projectsData.data.slice(0, 3) : []
-    // 工作经历：只显示2个
-    experiences.value = Array.isArray(experiencesData) ? experiencesData.slice(0, 2) : []
+    // 工作经历：首页时间轴显示3个
+    experiences.value = Array.isArray(experiencesData) ? experiencesData.slice(0, 3) : []
     // 学习记录：只显示一行（3个）
     learnings.value = Array.isArray(learningsData) ? learningsData.slice(0, 3) : []
     // 生活动态：只显示一行（3个）
