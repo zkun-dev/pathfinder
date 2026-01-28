@@ -21,7 +21,27 @@ COPY . .
 # ⚠️ Railway 会在构建时自动注入环境变量
 # 环境变量必须以 VITE_ 开头才能在 Vite 构建时访问
 # 必需环境变量：VITE_API_BASE_URL（后端 API 地址）
-RUN pnpm run build
+#
+# 使用 ARG 声明构建参数，确保环境变量在构建时可用
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
+# 输出构建时的环境变量（用于调试）
+RUN echo "=========================================" && \
+    echo "构建环境变量检查" && \
+    echo "=========================================" && \
+    echo "NODE_ENV=${NODE_ENV:-not set}" && \
+    echo "VITE_API_BASE_URL=${VITE_API_BASE_URL:-not set}" && \
+    echo "=========================================" && \
+    if [ -z "$VITE_API_BASE_URL" ]; then \
+      echo "❌ 错误: VITE_API_BASE_URL 环境变量未设置"; \
+      echo "请在 Railway Variables 中设置 VITE_API_BASE_URL"; \
+      echo "例如: VITE_API_BASE_URL=https://pathfinder-backend-production-3268.up.railway.app/api"; \
+      exit 1; \
+    fi && \
+    echo "✅ 环境变量验证通过: $VITE_API_BASE_URL" && \
+    echo "开始构建..." && \
+    pnpm run build
 
 # 验证构建产物
 RUN test -d /app/dist/static || (echo "构建失败：dist/static 目录不存在" && exit 1)
