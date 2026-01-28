@@ -1,5 +1,7 @@
 <template>
   <div>
+    <LoadingSpinner v-if="initialLoading" container-class="min-h-[400px]" show-text text="加载中..." />
+    <template v-else>
     <div class="flex justify-between items-center mb-6">
       <h2
         :class="[
@@ -90,10 +92,13 @@
                     class="flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 shadow-md"
                     :class="isDark ? 'border-gray-600' : 'border-gray-200'"
                   >
-                    <img
+                    <ImageWithPlaceholder
                       :src="experience.companyLogo"
                       :alt="experience.companyName"
-                      class="w-full h-full object-cover"
+                      container-class="w-full h-full"
+                      image-class="w-full h-full object-cover"
+                      placeholder-class="w-full h-full"
+                      placeholder-icon-class="text-xl"
                     />
                   </div>
                   <div
@@ -426,6 +431,7 @@
       type="danger"
       @confirm="handleDeleteConfirm"
     />
+    </template>
   </div>
 </template>
 
@@ -437,8 +443,10 @@ import { experienceApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import Modal from '@/components/Admin/Modal.vue';
 import ImageUpload from '@/components/Admin/ImageUpload.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import ConfirmDialog from '@/components/Admin/ConfirmDialog.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import type { Experience } from '@/types';
 
 const { isDark } = useTheme();
@@ -447,6 +455,7 @@ const experiences = ref<Experience[]>([]);
 const showModal = ref(false);
 const editingExperience = ref<Experience | null>(null);
 const loading = ref(false);
+const initialLoading = ref(true);
 const error = ref<string | null>(null);
 const showConfirmDialog = ref(false);
 const deletingExperienceId = ref<number | null>(null);
@@ -501,9 +510,13 @@ const formatDate = (dateString: string) => {
 
 const loadExperiences = async () => {
   try {
+    initialLoading.value = true;
     experiences.value = await experienceApi.getExperiences();
   } catch (err: any) {
     logger.error('加载工作经历失败:', err);
+    toast.error('加载工作经历失败');
+  } finally {
+    initialLoading.value = false;
   }
 };
 
@@ -572,12 +585,14 @@ const handleDeleteConfirm = async () => {
   if (!deletingExperienceId.value) return;
 
   try {
+    loading.value = true;
     await experienceApi.deleteExperience(deletingExperienceId.value);
     toast.success('工作经历删除成功！');
     await loadExperiences();
   } catch (err: any) {
     toast.error(err.message || '删除失败');
   } finally {
+    loading.value = false;
     deletingExperienceId.value = null;
   }
 };

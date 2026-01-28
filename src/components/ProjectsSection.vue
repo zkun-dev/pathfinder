@@ -41,10 +41,13 @@
           v-if="project.coverImage"
           class="relative h-48 overflow-hidden"
         >
-          <img
+          <ImageWithPlaceholder
             :src="project.coverImage"
             :alt="project.title"
-            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            container-class="w-full h-48"
+            image-class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            placeholder-class="w-full h-48"
+            placeholder-icon-class="text-4xl"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
         </div>
@@ -188,6 +191,7 @@
 <script setup lang="ts">
 import { useTheme } from '@/composables/useTheme';
 import EmptyState from '@/components/EmptyState.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import type { Project } from '@/types';
 
 defineProps<{

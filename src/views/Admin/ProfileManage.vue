@@ -1,5 +1,7 @@
 <template>
   <div>
+    <LoadingSpinner v-if="initialLoading" container-class="min-h-[400px]" show-text text="加载中..." />
+    <template v-else>
     <h2
       :class="[
         'text-2xl font-bold mb-6 transition-colors',
@@ -221,11 +223,6 @@
         <p class="text-sm text-red-500 flex-1">{{ error }}</p>
       </div>
 
-      <div v-if="success" class="p-4 rounded-lg bg-green-500/10 border border-green-500/20 flex items-start gap-3">
-        <i class="fa-solid fa-circle-check text-green-500 mt-0.5"></i>
-        <p class="text-sm text-green-500 flex-1">{{ success }}</p>
-      </div>
-
       <!-- 操作按钮 -->
       <div class="flex justify-end gap-4 pt-4">
         <button
@@ -253,6 +250,7 @@
         </button>
       </div>
     </div>
+    </template>
   </div>
 </template>
 
@@ -262,8 +260,11 @@ import { useTheme } from '@/composables/useTheme';
 import { profileApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import ImageUpload from '@/components/Admin/ImageUpload.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import { useToast } from '@/composables/useToast';
 
 const { isDark } = useTheme();
+const toast = useToast();
 
 const form = ref({
   name: '',
@@ -279,8 +280,8 @@ const form = ref({
 const socialLinksText = ref('');
 
 const loading = ref(false);
+const initialLoading = ref(true);
 const error = ref<string | null>(null);
-const success = ref<string | null>(null);
 
 const labelClass = computed(() => [
   'flex items-center gap-2 text-sm font-medium mb-2 transition-colors',
@@ -299,6 +300,7 @@ const inputClass = computed(() => {
 
 const loadProfile = async () => {
   try {
+    initialLoading.value = true;
     const profile = await profileApi.getProfile();
     form.value = {
       name: profile.name || '',
@@ -315,6 +317,9 @@ const loadProfile = async () => {
       : '';
   } catch (err: any) {
     logger.error('加载个人信息失败:', err);
+    toast.error('加载个人信息失败');
+  } finally {
+    initialLoading.value = false;
   }
 };
 
@@ -322,7 +327,6 @@ const handleSubmit = async () => {
   try {
     loading.value = true;
     error.value = null;
-    success.value = null;
 
     const submitData: any = { ...form.value };
     
@@ -332,6 +336,7 @@ const handleSubmit = async () => {
         submitData.socialLinks = JSON.parse(socialLinksText.value);
       } catch (e) {
         error.value = '社交链接JSON格式错误';
+        toast.error('社交链接JSON格式错误');
         return;
       }
     } else {
@@ -339,12 +344,10 @@ const handleSubmit = async () => {
     }
 
     await profileApi.updateProfile(submitData);
-    success.value = '保存成功！';
-    setTimeout(() => {
-      success.value = null;
-    }, 3000);
+    toast.success('个人信息更新成功！');
   } catch (err: any) {
     error.value = err.message || '保存失败';
+    toast.error(err.message || '保存失败');
   } finally {
     loading.value = false;
   }

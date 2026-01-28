@@ -298,9 +298,18 @@
           isDark ? 'bg-gray-900' : 'bg-gray-50',
         ]"
       >
-        <router-view v-slot="{ Component }">
+        <router-view v-slot="{ Component, route }">
           <transition name="fade" mode="out-in">
-            <component :is="Component" />
+            <Suspense>
+              <template #default>
+                <component :is="Component" :key="route.path" />
+              </template>
+              <template #fallback>
+                <div class="flex items-center justify-center min-h-[400px]">
+                  <LoadingSpinner show-text text="加载中..." />
+                </div>
+              </template>
+            </Suspense>
           </transition>
         </router-view>
       </main>
@@ -316,10 +325,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, Suspense } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTheme } from '@/composables/useTheme';
 import { useAuth } from '@/composables/useAuth';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 
 const route = useRoute();
 const router = useRouter();

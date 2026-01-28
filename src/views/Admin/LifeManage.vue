@@ -1,5 +1,7 @@
 <template>
   <div>
+    <LoadingSpinner v-if="initialLoading" container-class="min-h-[400px]" show-text text="加载中..." />
+    <template v-else>
     <div class="flex justify-between items-center mb-6">
       <h2
         :class="[
@@ -37,10 +39,13 @@
           v-if="life.coverImage"
           class="relative h-48 overflow-hidden"
         >
-          <img
+          <ImageWithPlaceholder
             :src="life.coverImage"
             :alt="life.title"
-            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            container-class="w-full h-full"
+            image-class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            placeholder-class="w-full h-full"
+            placeholder-icon-class="text-2xl"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
           <!-- 发布状态 -->
@@ -367,6 +372,7 @@
       type="danger"
       @confirm="handleDeleteConfirm"
     />
+    </template>
   </div>
 </template>
 
@@ -378,8 +384,10 @@ import { lifeApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import Modal from '@/components/Admin/Modal.vue';
 import ImageUpload from '@/components/Admin/ImageUpload.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import ConfirmDialog from '@/components/Admin/ConfirmDialog.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import type { Life } from '@/types';
 
 const { isDark } = useTheme();
@@ -388,6 +396,7 @@ const lifePosts = ref<Life[]>([]);
 const showModal = ref(false);
 const editingLife = ref<Life | null>(null);
 const loading = ref(false);
+const initialLoading = ref(true);
 const error = ref<string | null>(null);
 const showConfirmDialog = ref(false);
 const deletingLifeId = ref<number | null>(null);
@@ -434,10 +443,14 @@ const formatDate = (dateString: string) => {
 
 const loadLifePosts = async () => {
   try {
+    initialLoading.value = true;
     const response = await lifeApi.getLifePosts({ limit: 100 });
     lifePosts.value = response.data;
   } catch (err: any) {
     logger.error('加载生活动态失败:', err);
+    toast.error('加载生活动态失败');
+  } finally {
+    initialLoading.value = false;
   }
 };
 
@@ -497,12 +510,14 @@ const handleDeleteConfirm = async () => {
   if (!deletingLifeId.value) return;
 
   try {
+    loading.value = true;
     await lifeApi.deleteLifePost(deletingLifeId.value);
     toast.success('生活动态删除成功！');
     await loadLifePosts();
   } catch (err: any) {
     toast.error(err.message || '删除失败');
   } finally {
+    loading.value = false;
     deletingLifeId.value = null;
   }
 };

@@ -21,14 +21,15 @@
               <p class="text-xs" :class="isDark ? 'text-red-400' : 'text-red-600'">加载失败</p>
             </div>
           </div>
-          <img
+          <ImageWithPlaceholder
             v-else
             :src="previewUrl || (typeof modelValue === 'string' ? modelValue : '')"
             :alt="label"
-            class="w-32 h-32 object-cover rounded-lg border-2"
+            container-class="w-32 h-32 rounded-lg border-2"
             :class="isDark ? 'border-gray-600' : 'border-gray-200'"
-            @error="handleImageError"
-            @load="imageError = false"
+            image-class="w-32 h-32 object-cover rounded-lg"
+            placeholder-class="rounded-lg"
+            placeholder-icon-class="text-2xl"
           />
           <button
             v-if="(modelValue && typeof modelValue === 'string') || previewUrl"
@@ -123,14 +124,15 @@
               <p class="text-xs" :class="isDark ? 'text-red-400' : 'text-red-600'">加载失败</p>
             </div>
           </div>
-          <img
+          <ImageWithPlaceholder
             v-else
             :src="url"
             :alt="`${label} ${index + 1}`"
-            class="w-full h-24 object-cover rounded-lg border-2"
+            container-class="w-full h-24 rounded-lg border-2"
             :class="isDark ? 'border-gray-600' : 'border-gray-200'"
-            @error="(e) => handleMultipleImageError(e, index)"
-            @load="imageErrors[index] = false"
+            image-class="w-full h-24 object-cover rounded-lg"
+            placeholder-class="rounded-lg"
+            placeholder-icon-class="text-lg"
           />
           <button
             type="button"
@@ -198,6 +200,7 @@ import { ref, computed, watch } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import { uploadApi } from '@/services/api';
 import { logger } from '@/utils/logger';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 
 interface Props {
   modelValue?: string | string[];

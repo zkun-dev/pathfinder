@@ -30,10 +30,13 @@
           v-if="life.coverImage"
           class="h-64 overflow-hidden relative"
         >
-          <img
+          <ImageWithPlaceholder
             :src="life.coverImage"
             :alt="life.title"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            container-class="w-full h-64"
+            image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            placeholder-class="w-full h-64"
+            placeholder-icon-class="text-4xl"
           />
           <div
             class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
@@ -123,6 +126,7 @@
 <script setup lang="ts">
 import { useTheme } from '@/composables/useTheme';
 import EmptyState from '@/components/EmptyState.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import type { Life } from '@/types';
 
 defineProps<{

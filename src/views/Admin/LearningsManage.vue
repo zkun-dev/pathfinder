@@ -1,5 +1,7 @@
 <template>
   <div>
+    <LoadingSpinner v-if="initialLoading" container-class="min-h-[400px]" show-text text="加载中..." />
+    <template v-else>
     <div class="flex justify-between items-center mb-6">
       <h2
         :class="[
@@ -451,6 +453,7 @@
       type="danger"
       @confirm="handleDeleteConfirm"
     />
+    </template>
   </div>
 </template>
 
@@ -463,6 +466,7 @@ import { logger } from '@/utils/logger';
 import Modal from '@/components/Admin/Modal.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import ConfirmDialog from '@/components/Admin/ConfirmDialog.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import type { Learning } from '@/types';
 
 const { isDark } = useTheme();
@@ -471,6 +475,7 @@ const learnings = ref<Learning[]>([]);
 const showModal = ref(false);
 const editingLearning = ref<Learning | null>(null);
 const loading = ref(false);
+const initialLoading = ref(true);
 const error = ref<string | null>(null);
 const showConfirmDialog = ref(false);
 const deletingLearningId = ref<number | null>(null);
@@ -534,9 +539,13 @@ const resetForm = () => {
 
 const loadLearnings = async () => {
   try {
+    initialLoading.value = true;
     learnings.value = await learningApi.getLearnings();
   } catch (err: any) {
     logger.error('加载学习记录失败:', err);
+    toast.error('加载学习记录失败');
+  } finally {
+    initialLoading.value = false;
   }
 };
 
@@ -612,12 +621,14 @@ const handleDeleteConfirm = async () => {
   if (!deletingLearningId.value) return;
 
   try {
+    loading.value = true;
     await learningApi.deleteLearning(deletingLearningId.value);
     toast.success('学习记录删除成功！');
     await loadLearnings();
   } catch (err: any) {
     toast.error(err.message || '删除失败');
   } finally {
+    loading.value = false;
     deletingLearningId.value = null;
   }
 };

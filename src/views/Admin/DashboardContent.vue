@@ -1,5 +1,7 @@
 <template>
   <div>
+    <LoadingSpinner v-if="initialLoading" container-class="min-h-[400px]" show-text text="加载中..." />
+    <template v-else>
     <h2
       :class="[
         'text-2xl font-bold mb-6 transition-colors',
@@ -202,6 +204,7 @@
         </router-link>
       </div>
     </div>
+    </template>
   </div>
 </template>
 
@@ -210,6 +213,7 @@ import { ref, onMounted } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import { skillApi, projectApi, experienceApi, learningApi } from '@/services/api';
 import { logger } from '@/utils/logger';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 
 const { isDark } = useTheme();
 
@@ -220,8 +224,11 @@ const stats = ref({
   learnings: 0,
 });
 
+const initialLoading = ref(true);
+
 const loadStats = async () => {
   try {
+    initialLoading.value = true;
     const [skills, projects, experiences, learnings] = await Promise.all([
       skillApi.getSkills(),
       projectApi.getProjects({ limit: 1 }),
@@ -237,6 +244,8 @@ const loadStats = async () => {
     };
   } catch (err) {
     logger.error('加载统计数据失败:', err);
+  } finally {
+    initialLoading.value = false;
   }
 };
 

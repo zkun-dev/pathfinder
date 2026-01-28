@@ -110,11 +110,14 @@
                       isDark ? 'bg-blue-500/30' : 'bg-blue-400/30',
                     ]"
                   ></div>
-                  <img
+                  <ImageWithPlaceholder
                     :src="profile.avatarUrl"
                     :alt="profile.name"
-                    class="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 shadow-2xl"
+                    container-class="relative w-32 h-32 md:w-40 md:h-40 rounded-full border-4 shadow-2xl"
                     :class="isDark ? 'border-white/20' : 'border-gray-300/50'"
+                    image-class="w-full h-full rounded-full object-cover"
+                    placeholder-class="rounded-full"
+                    placeholder-icon-class="text-3xl"
                   />
                 </div>
                 <div
@@ -493,6 +496,7 @@ import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
 import ExperiencesSection from '@/components/ExperiencesSection.vue';
 import EmptyState from '@/components/EmptyState.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import { profileApi, experienceApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import type { Profile, Experience, SocialLink } from '@/types';

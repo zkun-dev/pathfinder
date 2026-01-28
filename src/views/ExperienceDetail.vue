@@ -114,10 +114,13 @@
                   v-if="experience.companyLogo"
                   class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 shadow-xl"
                 >
-                  <img
+                  <ImageWithPlaceholder
                     :src="experience.companyLogo"
                     :alt="experience.companyName"
-                    class="w-full h-full object-cover"
+                    container-class="w-full h-full"
+                    image-class="w-full h-full object-cover"
+                    placeholder-class="w-full h-full"
+                    placeholder-icon-class="text-2xl"
                   />
                 </div>
                 <div
@@ -448,6 +451,7 @@ import { useRoute } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import { experienceApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import type { Experience } from '@/types';

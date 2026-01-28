@@ -19,11 +19,13 @@
         <div
           class="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-500/20 z-0"
         ></div>
-        <img
-          :src="avatarUrl || profile.avatarUrl || 'https://via.placeholder.com/128'"
+        <ImageWithPlaceholder
+          :src="avatarUrl || profile.avatarUrl || ''"
           :alt="`${profile.name}的头像`"
-          class="w-full h-full object-cover relative z-10"
-          loading="lazy"
+          container-class="w-full h-full relative z-10"
+          image-class="w-full h-full object-cover"
+          placeholder-class="w-full h-full rounded-full"
+          placeholder-icon-class="text-4xl"
         />
       </div>
     </div>
@@ -239,6 +241,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useTheme } from '@/composables/useTheme';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import type { Profile } from '@/types';
 
 const props = defineProps<{

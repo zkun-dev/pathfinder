@@ -110,10 +110,13 @@
           class="relative mb-12 rounded-3xl overflow-hidden shadow-2xl group"
         >
           <div class="aspect-video w-full relative">
-            <img
+            <ImageWithPlaceholder
               :src="project.coverImage"
               :alt="project.title"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              container-class="w-full h-full"
+              image-class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              placeholder-class="w-full h-full"
+              placeholder-icon-class="text-4xl"
             />
             <div
               class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
@@ -321,10 +324,13 @@
                     :key="index"
                     class="group relative rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]"
                   >
-                    <img
+                    <ImageWithPlaceholder
                       :src="image"
                       :alt="`${project.title} - 图片 ${index + 1}`"
-                      class="w-full h-auto object-cover"
+                      container-class="w-full"
+                      image-class="w-full h-auto object-cover"
+                      placeholder-class="w-full h-64"
+                      placeholder-icon-class="text-3xl"
                     />
                     <div
                       class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
@@ -512,6 +518,7 @@ import { useRoute } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import { projectApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import type { Project } from '@/types';

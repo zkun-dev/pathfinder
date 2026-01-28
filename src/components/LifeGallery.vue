@@ -49,55 +49,73 @@
           class="relative h-40 sm:h-48 overflow-hidden"
         >
           <!-- 单张图片 -->
-          <img
+          <ImageWithPlaceholder
             v-if="life.images.length === 1"
             :src="life.images[0]"
             :alt="life.title"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            container-class="w-full h-full"
+            image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            placeholder-class="w-full h-full"
+            placeholder-icon-class="text-2xl"
           />
           <!-- 多张图片网格 -->
           <div
             v-else-if="life.images.length === 2"
             class="grid grid-cols-2 h-full gap-1"
           >
-            <img
+            <ImageWithPlaceholder
               v-for="(img, i) in life.images"
               :key="i"
               :src="img"
               :alt="`${life.title} - ${i + 1}`"
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              container-class="w-full h-full"
+              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              placeholder-class="w-full h-full"
+              placeholder-icon-class="text-lg"
             />
           </div>
           <div
             v-else-if="life.images.length === 3"
             class="grid grid-cols-2 h-full gap-1"
           >
-            <img
+            <ImageWithPlaceholder
               :src="life.images[0]"
               :alt="`${life.title} - 1`"
-              class="row-span-2 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              container-class="row-span-2 w-full h-full"
+              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              placeholder-class="w-full h-full"
+              placeholder-icon-class="text-lg"
             />
-            <img
+            <ImageWithPlaceholder
               :src="life.images[1]"
               :alt="`${life.title} - 2`"
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              container-class="w-full h-full"
+              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              placeholder-class="w-full h-full"
+              placeholder-icon-class="text-lg"
             />
-            <img
+            <ImageWithPlaceholder
               :src="life.images[2]"
               :alt="`${life.title} - 3`"
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              container-class="w-full h-full"
+              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              placeholder-class="w-full h-full"
+              placeholder-icon-class="text-lg"
             />
           </div>
           <div
             v-else
             class="grid grid-cols-2 h-full gap-1"
           >
-            <img
+            <ImageWithPlaceholder
               v-for="(img, i) in life.images.slice(0, 4)"
               :key="i"
               :src="img"
               :alt="`${life.title} - ${i + 1}`"
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              container-class="w-full h-full"
+              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              placeholder-class="w-full h-full"
+              placeholder-icon-class="text-lg"
             />
             <div
               v-if="life.images.length > 4"
@@ -120,10 +138,13 @@
           v-else-if="life.coverImage"
           class="relative h-48 overflow-hidden"
         >
-          <img
+          <ImageWithPlaceholder
             :src="life.coverImage"
             :alt="life.title"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            container-class="w-full h-48"
+            image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            placeholder-class="w-full h-48"
+            placeholder-icon-class="text-3xl"
           />
           <div
             class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -224,6 +245,7 @@
 <script setup lang="ts">
 import { useTheme } from '@/composables/useTheme';
 import EmptyState from '@/components/EmptyState.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import type { Life } from '@/types';
 
 defineProps<{

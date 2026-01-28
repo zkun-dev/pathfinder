@@ -4,14 +4,16 @@
       <div
         v-if="modelValue"
         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto p-4"
-        @click.self="handleClose"
+        @mousedown.self="handleBackgroundMouseDown"
+        @mouseup.self="handleBackgroundMouseUp"
       >
         <div
           :class="[
             'w-full max-w-4xl h-[80vh] flex flex-col rounded-xl transition-colors shadow-2xl',
             isDark ? 'bg-gray-800' : 'bg-white',
           ]"
-          @click.stop
+          @mousedown.stop
+          @mouseup.stop
         >
           <!-- 头部 -->
           <div
@@ -103,9 +105,22 @@ const emit = defineEmits<{
 
 const { isDark } = useTheme();
 
+let mouseDownOnBackground = false
+
+const handleBackgroundMouseDown = () => {
+  mouseDownOnBackground = true
+}
+
+const handleBackgroundMouseUp = () => {
+  if (mouseDownOnBackground) {
+    handleClose()
+  }
+  mouseDownOnBackground = false
+}
+
 const handleClose = () => {
-  emit('update:modelValue', false);
-};
+  emit('update:modelValue', false)
+}
 </script>
 
 <style scoped>

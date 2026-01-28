@@ -1,5 +1,7 @@
 <template>
   <div>
+    <LoadingSpinner v-if="initialLoading" container-class="min-h-[400px]" show-text text="加载中..." />
+    <template v-else>
     <div class="flex justify-between items-center mb-6">
       <h2
         :class="[
@@ -57,10 +59,13 @@
           v-if="project.coverImage"
           class="relative h-48 overflow-hidden"
         >
-          <img
+          <ImageWithPlaceholder
             :src="project.coverImage"
             :alt="project.title"
-            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            container-class="w-full h-full"
+            image-class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            placeholder-class="w-full h-full"
+            placeholder-icon-class="text-2xl"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
         </div>
@@ -456,6 +461,7 @@
       type="danger"
       @confirm="handleDeleteConfirm"
     />
+    </template>
   </div>
 </template>
 
@@ -467,8 +473,10 @@ import { projectApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import Modal from '@/components/Admin/Modal.vue';
 import ImageUpload from '@/components/Admin/ImageUpload.vue';
+import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import ConfirmDialog from '@/components/Admin/ConfirmDialog.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import type { Project } from '@/types';
 
 const { isDark } = useTheme();
@@ -477,6 +485,7 @@ const projects = ref<Project[]>([]);
 const showModal = ref(false);
 const editingProject = ref<Project | null>(null);
 const loading = ref(false);
+const initialLoading = ref(true);
 const error = ref<string | null>(null);
 const showConfirmDialog = ref(false);
 const deletingProjectId = ref<number | null>(null);
@@ -535,10 +544,14 @@ const resetForm = () => {
 
 const loadProjects = async () => {
   try {
+    initialLoading.value = true;
     const response = await projectApi.getProjects({ limit: 100 });
     projects.value = response.data;
   } catch (err: any) {
     logger.error('加载项目列表失败:', err);
+    toast.error('加载项目列表失败');
+  } finally {
+    initialLoading.value = false;
   }
 };
 
@@ -608,12 +621,14 @@ const handleDeleteConfirm = async () => {
   if (!deletingProjectId.value) return;
 
   try {
+    loading.value = true;
     await projectApi.deleteProject(deletingProjectId.value);
     toast.success('项目删除成功！');
     await loadProjects();
   } catch (err: any) {
     toast.error(err.message || '删除失败');
   } finally {
+    loading.value = false;
     deletingProjectId.value = null;
   }
 };

@@ -1,5 +1,7 @@
 <template>
   <div>
+    <LoadingSpinner v-if="initialLoading" container-class="min-h-[400px]" show-text text="加载中..." />
+    <template v-else>
     <div class="flex justify-between items-center mb-6">
       <h2
         :class="[
@@ -337,6 +339,7 @@
       type="danger"
       @confirm="handleDeleteConfirm"
     />
+    </template>
   </div>
 </template>
 
@@ -349,6 +352,7 @@ import { logger } from '@/utils/logger';
 import Modal from '@/components/Admin/Modal.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import ConfirmDialog from '@/components/Admin/ConfirmDialog.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import type { Skill } from '@/types';
 
 const { isDark } = useTheme();
@@ -357,6 +361,7 @@ const skills = ref<Skill[]>([]);
 const showModal = ref(false);
 const editingSkill = ref<Skill | null>(null);
 const loading = ref(false);
+const initialLoading = ref(true);
 const error = ref<string | null>(null);
 const showConfirmDialog = ref(false);
 const deletingSkillId = ref<number | null>(null);
@@ -398,9 +403,13 @@ const resetForm = () => {
 
 const loadSkills = async () => {
   try {
+    initialLoading.value = true;
     skills.value = await skillApi.getSkills();
   } catch (err: any) {
     logger.error('加载技能列表失败:', err);
+    toast.error('加载技能列表失败');
+  } finally {
+    initialLoading.value = false;
   }
 };
 
@@ -451,12 +460,14 @@ const handleDeleteConfirm = async () => {
   if (!deletingSkillId.value) return;
 
   try {
+    loading.value = true;
     await skillApi.deleteSkill(deletingSkillId.value);
     toast.success('技能删除成功！');
     await loadSkills();
   } catch (err: any) {
     toast.error(err.message || '删除失败');
   } finally {
+    loading.value = false;
     deletingSkillId.value = null;
   }
 };
