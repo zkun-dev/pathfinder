@@ -256,17 +256,8 @@ export const uploadApi = {
 
   deleteFile: async (url: string) => {
     const filePath = extractFilePath(url)
-    const deleteUrl = `${API_BASE_URL}${API_ENDPOINTS.DELETE_FILE}${filePath}`
-    const response = await fetch(deleteUrl, {
-      method: 'DELETE',
-      headers: getAuthHeaders()
+    return request<{ message: string }>(`${API_ENDPOINTS.DELETE_FILE}${filePath}`, {
+      method: 'DELETE'
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ error: '删除失败' }))
-      throw new Error(error.error || `删除失败 (${response.status})`)
-    }
-
-    return response.json()
   }
 }

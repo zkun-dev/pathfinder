@@ -81,24 +81,18 @@ const createEnvConfig = (): EnvConfig => ({
 
 export const env: EnvConfig = createEnvConfig()
 
-export const config = {
-  API_BASE_URL: env.API_BASE_URL,
-  API_TIMEOUT: env.API_TIMEOUT,
-  enableDebugLog: env.enableDebugLog,
-  showDetailedErrors: env.showDetailedErrors,
-} as const
-
 export const validateEnv = (): void => {
   try {
-    const apiBaseUrl = getApiBaseUrl()
-    const timeout = getApiTimeout()
-    
-    if (timeout < 1000) {
+    if (env.API_TIMEOUT < 1000) {
       logger.warn('API_TIMEOUT 设置过小，建议至少 1000ms')
     }
     
     if (isDev) {
-      logger.log('开发环境配置', { apiBaseUrl, timeout, mode: MODE })
+      logger.log('开发环境配置', { 
+        apiBaseUrl: env.API_BASE_URL, 
+        timeout: env.API_TIMEOUT, 
+        mode: MODE 
+      })
     }
   } catch (error) {
     if (error instanceof Error) {
