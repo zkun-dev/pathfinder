@@ -23,19 +23,17 @@
         <div class="mb-2 sm:mb-4 relative">
           <div
             :class="[
-              'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6',
-              isDark
-                ? 'bg-gradient-to-br from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30'
-                : 'bg-gradient-to-br from-blue-100 to-purple-100 group-hover:from-blue-200 group-hover:to-purple-200',
+              'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-lg border',
+              getIconBgClass(skill),
             ]"
           >
             <i
               :class="[
-                skill.icon || 'fa-solid fa-code',
+                getIconConfig(skill).icon,
                 'text-lg sm:text-xl md:text-2xl transition-all duration-500',
-                isDark
-                  ? 'text-blue-400 group-hover:text-blue-300 group-hover:scale-110'
-                  : 'text-blue-600 group-hover:text-blue-700 group-hover:scale-110',
+                getIconConfig(skill).color || (isDark
+                  ? 'text-blue-400 group-hover:text-blue-300'
+                  : 'text-blue-600 group-hover:text-blue-700'),
               ]"
             ></i>
           </div>
@@ -88,13 +86,37 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import EmptyState from '@/components/EmptyState.vue';
+import { getSkillIcon } from '@/utils/skillIcons';
 import type { Skill } from '@/types';
 
-defineProps<{
+const props = defineProps<{
   skills: Skill[];
 }>();
 
 const { isDark } = useTheme();
+
+// 为每个技能计算图标配置
+const getIconConfig = (skill: Skill) => {
+  return getSkillIcon(skill.name, skill.icon);
+};
+
+const getIconBgClass = (skill: Skill) => {
+  const config = getIconConfig(skill);
+  const baseClasses = 'bg-gradient-to-br';
+  
+  if (isDark.value) {
+    if (config.bgGradientDark) {
+      return `${baseClasses} ${config.bgGradientDark} border-gray-600/50 group-hover:border-gray-500`;
+    }
+    return `${baseClasses} from-gray-700/50 to-gray-800/50 group-hover:from-gray-700 group-hover:to-gray-800 border-gray-600/50 group-hover:border-gray-500`;
+  } else {
+    if (config.bgGradient) {
+      return `${baseClasses} ${config.bgGradient} border-gray-200 group-hover:border-gray-300`;
+    }
+    return `${baseClasses} from-white to-gray-50 group-hover:from-white group-hover:to-gray-100 border-gray-200 group-hover:border-gray-300`;
+  }
+};
 </script>

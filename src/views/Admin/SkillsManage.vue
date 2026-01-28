@@ -47,19 +47,16 @@
           <div class="flex flex-col items-center text-center mb-4">
             <div
               :class="[
-                'w-20 h-20 rounded-2xl flex items-center justify-center mb-3 shadow-lg',
-                isDark
-                  ? 'bg-gradient-to-br from-blue-600/20 to-cyan-600/20 border-2 border-blue-500/30'
-                  : 'bg-gradient-to-br from-blue-100 to-cyan-100 border-2 border-blue-200',
+                'w-20 h-20 rounded-2xl flex items-center justify-center mb-3 shadow-lg transition-all duration-300 hover:scale-110 hover:rotate-6',
+                getIconBgClass(skill),
               ]"
             >
               <i
-                v-if="skill.icon"
-                :class="[skill.icon, 'text-4xl', isDark ? 'text-blue-400' : 'text-blue-600']"
-              ></i>
-              <i
-                v-else
-                :class="['fa-solid fa-code text-4xl', isDark ? 'text-blue-400' : 'text-blue-600']"
+                :class="[
+                  getSkillIconConfig(skill).icon,
+                  'text-4xl transition-all duration-300',
+                  getSkillIconConfig(skill).color || (isDark ? 'text-blue-400' : 'text-blue-600'),
+                ]"
               ></i>
             </div>
             <h3
@@ -349,6 +346,7 @@ import { useTheme } from '@/composables/useTheme';
 import { useToast } from '@/composables/useToast';
 import { skillApi } from '@/services/api';
 import { logger } from '@/utils/logger';
+import { getSkillIcon } from '@/utils/skillIcons';
 import Modal from '@/components/Admin/Modal.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import ConfirmDialog from '@/components/Admin/ConfirmDialog.vue';
@@ -389,6 +387,29 @@ const inputClass = computed(() => {
     return `${base} bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:border-blue-500`;
   }
 });
+
+const getSkillIconConfig = (skill: Skill) => {
+  return getSkillIcon(skill.name, skill.icon);
+};
+
+const getIconBgClass = (skill: Skill) => {
+  const config = getSkillIconConfig(skill);
+  const baseClasses = 'bg-gradient-to-br border-2';
+  
+  if (isDark.value) {
+    if (config.bgGradientDark) {
+      // 使用完整的类名字符串
+      return `${baseClasses} ${config.bgGradientDark} border-gray-700/50 hover:border-gray-600`;
+    }
+    return `${baseClasses} from-gray-800/80 to-gray-900/80 border-gray-700/50 hover:border-gray-600`;
+  } else {
+    if (config.bgGradient) {
+      // 使用完整的类名字符串
+      return `${baseClasses} ${config.bgGradient} border-gray-200/50 hover:border-gray-300`;
+    }
+    return `${baseClasses} from-gray-50 to-gray-100 border-gray-200 hover:border-gray-300`;
+  }
+};
 
 const resetForm = () => {
   form.value = {
