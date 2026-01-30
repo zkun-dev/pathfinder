@@ -4,13 +4,6 @@
       <div
         v-for="(learning, index) in learnings"
         :key="learning.id"
-        v-motion
-        :initial="{ opacity: 0, y: 50 }"
-        :visible="{
-          opacity: 1,
-          y: 0,
-          transition: { duration: 600, delay: index * 100 },
-        }"
         :class="[
           'group relative overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer',
           'border hover:shadow-lg hover:-translate-y-1',

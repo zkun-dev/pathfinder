@@ -1,13 +1,10 @@
 <template>
-  <header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center py-4 md:py-6 px-4 backdrop-blur-md"
+  <header class="fixed top-0 left-0 right-0 z-50 h-16 flex justify-between items-center px-4 backdrop-blur-md"
     :class="[
       isDark ? 'bg-black/50 border-b border-white/10' : 'bg-white/80 border-b border-gray-200',
     ]"
   >
     <div
-      v-motion
-      :initial="{ opacity: 0, x: -20 }"
-      :enter="{ opacity: 1, x: 0, transition: { duration: 500 } }"
       :class="[
         'text-lg md:text-2xl font-bold transition-colors duration-300',
         isDark ? 'text-white' : 'text-gray-900',
@@ -41,21 +38,6 @@
         v-for="(item, index) in navItems"
         :key="`nav-${item.label}-${index}`"
         :to="item.href"
-        v-motion
-        :initial="{ opacity: 0, y: -10 }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            duration: 400,
-            delay: 100 + index * 50,
-            ease: 'easeOut',
-          },
-        }"
-        :visible="{
-          opacity: 1,
-          y: 0,
-        }"
         :class="[
           'relative px-3 py-2 rounded-lg transition-all duration-300 cursor-pointer',
           isActive(item.href)
@@ -80,9 +62,6 @@
 
     <div class="flex items-center gap-2 md:gap-3">
       <button
-        v-motion
-        :initial="{ opacity: 0, x: 20 }"
-        :enter="{ opacity: 1, x: 0 }"
         @click="toggleTheme"
         :class="[
           'p-2 rounded-lg transition-colors',
@@ -96,9 +75,6 @@
       </button>
       <router-link
         to="/admin/login"
-        v-motion
-        :initial="{ opacity: 0, x: 20 }"
-        :enter="{ opacity: 1, x: 0 }"
         :class="[
           'p-2 rounded-lg transition-colors',
           isDark
@@ -170,8 +146,16 @@ const route = useRoute();
 const { toggleTheme, isDark } = useTheme();
 const mobileMenuOpen = ref(false);
 
-// 只在首页显示导航
-const showNav = computed(() => route.path === '/');
+// 在首页、列表页和详情页显示导航，排除管理后台页面
+const showNav = computed(() => {
+  const path = route.path;
+  // 排除管理后台页面
+  if (path.startsWith('/admin')) {
+    return false;
+  }
+  // 在首页、列表页和详情页显示导航
+  return true;
+});
 
 const isActive = (path: string) => {
   // 基于当前路由路径判断是否激活

@@ -231,12 +231,52 @@
                   <i class="fa-solid fa-folder text-xs mr-1.5"></i>
                   分类
                 </label>
-                <input
-                  v-model="form.category"
-                  type="text"
-                  :class="inputClass"
-                  placeholder="前端/后端/工具"
-                />
+                <div class="relative group">
+                  <select
+                    v-model="form.category"
+                    :class="[
+                      inputClass,
+                      'pr-12 appearance-none cursor-pointer',
+                    ]"
+                    :style="!form.category ? (isDark ? { color: '#9ca3af' } : { color: '#9ca3af' }) : {}"
+                  >
+                    <option value="" disabled hidden>请选择分类</option>
+                    <option value="前端">前端</option>
+                    <option value="后端">后端</option>
+                    <option value="全栈">全栈</option>
+                    <option value="移动端">移动端</option>
+                    <option value="数据库">数据库</option>
+                    <option value="工具">工具</option>
+                    <option value="设计">设计</option>
+                    <option value="其他">其他</option>
+                  </select>
+                  <!-- 下拉箭头 -->
+                  <div
+                    :class="[
+                      'absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-0',
+                      'flex items-center justify-center w-5 h-5 rounded-md',
+                      isDark ? 'text-gray-400' : 'text-gray-500'
+                    ]"
+                  >
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                  </div>
+                  <!-- 清空按钮 -->
+                  <button
+                    v-if="form.category"
+                    @click.stop="form.category = ''"
+                    type="button"
+                    :class="[
+                      'absolute right-10 top-1/2 -translate-y-1/2 z-10',
+                      'w-6 h-6 flex items-center justify-center rounded-lg',
+                      'transition-all duration-200',
+                      isDark 
+                        ? 'text-gray-500 hover:text-white hover:bg-gray-700/80 active:scale-95' 
+                        : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100 active:scale-95'
+                    ]"
+                  >
+                    <i class="fa-solid fa-times text-xs"></i>
+                  </button>
+                </div>
               </div>
               <div>
                 <label :class="labelClass">
@@ -497,3 +537,4 @@ onMounted(() => {
   loadSkills();
 });
 </script>
+

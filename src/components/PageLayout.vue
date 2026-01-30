@@ -12,7 +12,7 @@
     ></div>
 
     <div class="relative z-10 container mx-auto px-4 pt-20 md:pt-28">
-      <Header :nav-items="[]" />
+      <Header :nav-items="NAV_ITEMS" />
 
       <!-- 加载状态 -->
       <div v-if="loading" class="fixed inset-0 flex items-center justify-center overflow-hidden z-20">
@@ -58,6 +58,7 @@ import { defineAsyncComponent } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import { NAV_ITEMS } from '@/constants';
 
 const ThreeDBackground = defineAsyncComponent(() =>
   import('@/components/ThreeDBackground.vue')

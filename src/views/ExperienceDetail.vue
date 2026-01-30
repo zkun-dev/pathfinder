@@ -15,7 +15,7 @@
 
     <!-- 页面内容 -->
     <div class="relative z-10 container mx-auto px-4 pt-28 pb-8">
-      <Header :nav-items="[]" />
+      <Header :nav-items="NAV_ITEMS" />
 
       <!-- 加载状态 -->
       <div v-if="loading" class="fixed inset-0 flex items-center justify-center overflow-hidden z-20">
@@ -47,18 +47,8 @@
 
       <!-- 工作经历详情 -->
       <div v-else-if="experience" class="max-w-6xl mx-auto">
-        <!-- 顶部导航栏 - 固定在顶部 -->
-        <div
-          v-motion
-          :initial="{ opacity: 0, y: -20 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }"
-          :class="[
-            'sticky top-20 z-40 mb-8 backdrop-blur-md rounded-2xl border px-6 py-4 transition-all duration-300',
-            isDark
-              ? 'bg-black/50 border-white/10 shadow-xl'
-              : 'bg-white/80 border-gray-200 shadow-lg',
-          ]"
-        >
+        <!-- 顶部导航栏 -->
+        <div class="sticky top-20 z-40 mb-8 pb-4 border-b" :class="isDark ? 'border-white/10' : 'border-gray-200'">
           <div class="flex items-center justify-between gap-4">
             <button
               @click="$router.back()"
@@ -88,160 +78,173 @@
           </div>
         </div>
 
-        <!-- 主要内容区域 - 两栏布局 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          <!-- 左侧主内容区 -->
-          <div class="lg:col-span-2 space-y-8">
-            <!-- 标题区域 -->
-            <div
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
-              <div class="flex items-start gap-6 mb-6">
-                <div
-                  v-if="experience.companyLogo"
-                  class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 shadow-xl"
-                >
-                  <ImageWithPlaceholder
-                    :src="experience.companyLogo"
-                    :alt="experience.companyName"
-                    container-class="w-full h-full"
-                    image-class="w-full h-full object-cover"
-                    placeholder-class="w-full h-full"
-                    placeholder-icon-class="text-2xl"
-                  />
-                </div>
-                <div
-                  v-else
+        <!-- 主要内容区域 -->
+        <div class="space-y-12 mb-12">
+          <!-- 标题区域 -->
+          <section class="space-y-6">
+            <div class="flex items-start gap-6">
+              <div
+                v-if="experience.companyLogo"
+                class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0"
+              >
+                <ImageWithPlaceholder
+                  :src="experience.companyLogo"
+                  :alt="experience.companyName"
+                  container-class="w-full h-full"
+                  image-class="w-full h-full object-cover"
+                  placeholder-class="w-full h-full"
+                  placeholder-icon-class="text-2xl"
+                />
+              </div>
+              <div
+                v-else
+                :class="[
+                  'w-20 h-20 rounded-xl flex items-center justify-center flex-shrink-0',
+                  isDark
+                    ? 'bg-gradient-to-br from-blue-500/30 to-purple-500/30'
+                    : 'bg-gradient-to-br from-blue-100 to-purple-100',
+                ]"
+              >
+                <i
                   :class="[
-                    'w-24 h-24 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl',
-                    isDark
-                      ? 'bg-gradient-to-br from-blue-500/30 to-purple-500/30'
-                      : 'bg-gradient-to-br from-blue-100 to-purple-100',
+                    'fa-solid fa-building text-3xl',
+                    isDark ? 'text-white/50' : 'text-gray-700/30',
+                  ]"
+                ></i>
+              </div>
+              <div class="flex-1">
+                <h1
+                  :class="[
+                    'text-4xl md:text-5xl font-bold mb-2',
+                    isDark ? 'text-white' : 'text-gray-900',
                   ]"
                 >
-                  <i
-                    :class="[
-                      'fa-solid fa-building text-4xl',
-                      isDark ? 'text-white/50' : 'text-gray-700/30',
-                    ]"
-                  ></i>
-                </div>
-                <div class="flex-1">
-                  <h1
-                    :class="[
-                      'text-4xl md:text-5xl font-bold mb-2 transition-colors',
-                      isDark ? 'text-white' : 'text-gray-900',
-                    ]"
-                  >
-                    {{ experience.position }}
-                  </h1>
-                  <p
-                    :class="[
-                      'text-2xl transition-colors mb-4',
-                      isDark ? 'text-gray-300' : 'text-gray-600',
-                    ]"
-                  >
-                    {{ experience.companyName }}
-                  </p>
-                  <div
-                    :class="[
-                      'flex items-center gap-4 text-lg transition-colors',
-                      isDark ? 'text-gray-400' : 'text-gray-600',
-                    ]"
-                  >
-                    <span class="flex items-center gap-2">
-                      <i class="fa-solid fa-calendar"></i>
-                      {{ formatDate(experience.startDate) }} -
-                      {{ experience.endDate ? formatDate(experience.endDate) : '至今' }}
-                    </span>
-                  </div>
+                  {{ experience.position }}
+                </h1>
+                <p
+                  :class="[
+                    'text-2xl mb-4',
+                    isDark ? 'text-gray-300' : 'text-gray-600',
+                  ]"
+                >
+                  {{ experience.companyName }}
+                </p>
+                <div
+                  :class="[
+                    'flex items-center gap-4 text-base',
+                    isDark ? 'text-gray-400' : 'text-gray-600',
+                  ]"
+                >
+                  <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-calendar"></i>
+                    {{ formatDate(experience.startDate) }} -
+                    {{ experience.endDate ? formatDate(experience.endDate) : '至今' }}
+                  </span>
                 </div>
               </div>
             </div>
+          </section>
 
-            <!-- 描述 -->
-            <div
-              v-if="experience.description"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
+          <!-- 工作描述 -->
+          <section v-if="experience.description" class="space-y-4 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <div class="flex items-center gap-3 mb-6">
+              <div
+                :class="[
+                  'w-12 h-12 rounded-xl flex items-center justify-center',
+                  isDark
+                    ? 'bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-500/30'
+                    : 'bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200',
+                ]"
+              >
+                <i
+                  :class="[
+                    'fa-solid fa-file-text text-xl',
+                    isDark ? 'text-blue-400' : 'text-blue-600',
+                  ]"
+                ></i>
+              </div>
               <h2
                 :class="[
-                  'text-2xl font-bold mb-4 transition-colors',
+                  'text-2xl font-bold',
                   isDark ? 'text-white' : 'text-gray-900',
                 ]"
               >
                 工作描述
               </h2>
+            </div>
+            <div
+              :class="[
+                'p-6 rounded-xl',
+                isDark
+                  ? 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50'
+                  : 'bg-gradient-to-br from-gray-50 to-white border border-gray-200/50',
+              ]"
+            >
               <p
                 :class="[
-                  'text-lg leading-relaxed transition-colors',
+                  'text-lg leading-relaxed',
                   isDark ? 'text-gray-300' : 'text-gray-700',
                 ]"
               >
                 {{ experience.description }}
               </p>
             </div>
+          </section>
 
-            <!-- 成就 -->
-            <div
-              v-if="experience.achievements && experience.achievements.length > 0"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 400 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
-              <div class="flex items-center gap-2 mb-6">
+          <!-- 主要成就 -->
+          <section v-if="experience.achievements && experience.achievements.length > 0" class="space-y-4 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <div class="flex items-center gap-3 mb-6">
+              <div
+                :class="[
+                  'w-12 h-12 rounded-xl flex items-center justify-center',
+                  isDark
+                    ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30'
+                    : 'bg-gradient-to-br from-yellow-100 to-orange-100 border border-yellow-200',
+                ]"
+              >
                 <i
                   :class="[
-                    'fa-solid fa-trophy text-2xl',
+                    'fa-solid fa-trophy text-xl',
                     isDark ? 'text-yellow-400' : 'text-yellow-600',
                   ]"
                 ></i>
-                <h2
-                  :class="[
-                    'text-2xl font-bold transition-colors',
-                    isDark ? 'text-white' : 'text-gray-900',
-                  ]"
-                >
-                  主要成就
-                </h2>
               </div>
+              <h2
+                :class="[
+                  'text-2xl font-bold',
+                  isDark ? 'text-white' : 'text-gray-900',
+                ]"
+              >
+                主要成就
+              </h2>
+            </div>
+            <div
+              :class="[
+                'p-6 rounded-xl space-y-4',
+                isDark
+                  ? 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50'
+                  : 'bg-gradient-to-br from-gray-50 to-white border border-gray-200/50',
+              ]"
+            >
               <ul class="space-y-4">
                 <li
                   v-for="(achievement, index) in experience.achievements"
                   :key="index"
                   class="flex items-start gap-3"
                 >
-                  <i
+                  <div
                     :class="[
-                      'fa-solid fa-check-circle mt-1 flex-shrink-0 text-lg',
-                      isDark ? 'text-green-400' : 'text-green-600',
+                      'w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5',
+                      isDark
+                        ? 'bg-green-500/20 text-green-400'
+                        : 'bg-green-100 text-green-600',
                     ]"
-                  ></i>
+                  >
+                    <i class="fa-solid fa-check text-xs"></i>
+                  </div>
                   <span
                     :class="[
-                      'text-lg transition-colors',
+                      'text-lg leading-relaxed',
                       isDark ? 'text-gray-300' : 'text-gray-700',
                     ]"
                   >
@@ -250,64 +253,73 @@
                 </li>
               </ul>
             </div>
+          </section>
 
-            <!-- 详细内容 -->
-            <div
-              v-if="experience.content"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 500 } }"
-              :class="[
-                'prose prose-lg max-w-none',
-                isDark ? 'prose-invert' : '',
-              ]"
-            >
+          <!-- 详细内容 -->
+          <section v-if="experience.content" class="space-y-4 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <div class="flex items-center gap-3 mb-6">
               <div
                 :class="[
-                  'backdrop-blur-md rounded-2xl p-8 md:p-10 transition-colors shadow-xl border',
+                  'w-12 h-12 rounded-xl flex items-center justify-center',
                   isDark
-                    ? 'bg-white/10 border-white/10'
-                    : 'bg-white/80 border-gray-200',
+                    ? 'bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30'
+                    : 'bg-gradient-to-br from-purple-100 to-pink-100 border border-purple-200',
                 ]"
               >
-                <h2
-                  :class="[
-                    'text-2xl font-bold mb-6 transition-colors',
-                    isDark ? 'text-white' : 'text-gray-900',
-                  ]"
-                >
-                  详细内容
-                </h2>
-                <div v-html="formatMarkdown(experience.content)"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 右侧边栏 -->
-          <div class="lg:col-span-1 space-y-6">
-            <!-- 技术栈卡片 -->
-            <div
-              v-if="experience.techStack && experience.techStack.length > 0"
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 300 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border sticky top-32',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
-              <div class="flex items-center gap-2 mb-4">
                 <i
                   :class="[
-                    'fa-solid fa-code text-xl',
-                    isDark ? 'text-blue-400' : 'text-blue-600',
+                    'fa-solid fa-file-lines text-xl',
+                    isDark ? 'text-purple-400' : 'text-purple-600',
                   ]"
                 ></i>
+              </div>
+              <h2
+                :class="[
+                  'text-2xl font-bold',
+                  isDark ? 'text-white' : 'text-gray-900',
+                ]"
+              >
+                详细内容
+              </h2>
+            </div>
+            <div
+              :class="[
+                'prose prose-lg max-w-none p-6 rounded-xl',
+                isDark
+                  ? 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 prose-invert'
+                  : 'bg-gradient-to-br from-gray-50 to-white border border-gray-200/50',
+              ]"
+            >
+              <div v-html="formatMarkdown(experience.content)"></div>
+            </div>
+          </section>
+
+          <!-- 技术栈和工作信息 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <!-- 技术栈 -->
+            <div
+              v-if="experience.techStack && experience.techStack.length > 0"
+              :class="[
+                'p-6 rounded-xl space-y-4',
+                isDark
+                  ? 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20'
+                  : 'bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200/50',
+              ]"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  :class="[
+                    'w-10 h-10 rounded-lg flex items-center justify-center',
+                    isDark
+                      ? 'bg-blue-500/20 text-blue-400'
+                      : 'bg-blue-100 text-blue-600',
+                  ]"
+                >
+                  <i class="fa-solid fa-code"></i>
+                </div>
                 <h3
                   :class="[
-                    'text-xl font-bold transition-colors',
+                    'text-xl font-bold',
                     isDark ? 'text-white' : 'text-gray-900',
                   ]"
                 >
@@ -319,10 +331,10 @@
                   v-for="tech in experience.techStack"
                   :key="tech"
                   :class="[
-                    'px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105',
+                    'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105',
                     isDark
-                      ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-500/30 hover:border-blue-400/50'
-                      : 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 border border-blue-200 hover:border-blue-300',
+                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:border-blue-400/50'
+                      : 'bg-blue-100 text-blue-700 border border-blue-200 hover:border-blue-300',
                   ]"
                 >
                   {{ tech }}
@@ -330,24 +342,31 @@
               </div>
             </div>
 
-            <!-- 工作信息卡片 -->
+            <!-- 工作信息 -->
             <div
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 400 } }"
               :class="[
-                'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border',
+                'p-6 rounded-xl space-y-4',
                 isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
+                  ? 'bg-gradient-to-br from-gray-700/50 to-gray-800/50 border border-gray-600/50'
+                  : 'bg-gradient-to-br from-gray-50 to-white border border-gray-200/50',
               ]"
             >
               <h3
                 :class="[
-                  'text-xl font-bold mb-4 transition-colors',
+                  'text-xl font-bold flex items-center gap-3',
                   isDark ? 'text-white' : 'text-gray-900',
                 ]"
               >
+                <div
+                  :class="[
+                    'w-10 h-10 rounded-lg flex items-center justify-center',
+                    isDark
+                      ? 'bg-gray-600/50 text-gray-300'
+                      : 'bg-gray-100 text-gray-600',
+                  ]"
+                >
+                  <i class="fa-solid fa-info-circle"></i>
+                </div>
                 工作信息
               </h3>
               <div class="space-y-4">
@@ -447,6 +466,7 @@ import { defineAsyncComponent } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
 import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
+import { NAV_ITEMS } from '@/constants';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import { experienceApi } from '@/services/api';
 import { logger } from '@/utils/logger';

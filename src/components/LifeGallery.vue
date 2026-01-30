@@ -4,13 +4,6 @@
       <article
         v-for="(life, index) in lifePosts"
         :key="life.id"
-        v-motion
-        :initial="{ opacity: 0, scale: 0.9 }"
-        :visible="{
-          opacity: 1,
-          scale: 1,
-          transition: { duration: 500, delay: index * 100 },
-        }"
         :class="[
           'group relative overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer',
           'border hover:shadow-lg hover:-translate-y-1',
@@ -54,7 +47,7 @@
             :src="life.images[0]"
             :alt="life.title"
             container-class="w-full h-full"
-            image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            image-class="w-full h-full object-cover"
             placeholder-class="w-full h-full"
             placeholder-icon-class="text-2xl"
           />
@@ -69,7 +62,7 @@
               :src="img"
               :alt="`${life.title} - ${i + 1}`"
               container-class="w-full h-full"
-              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              image-class="w-full h-full object-cover"
               placeholder-class="w-full h-full"
               placeholder-icon-class="text-lg"
             />
@@ -82,7 +75,7 @@
               :src="life.images[0]"
               :alt="`${life.title} - 1`"
               container-class="row-span-2 w-full h-full"
-              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              image-class="w-full h-full object-cover"
               placeholder-class="w-full h-full"
               placeholder-icon-class="text-lg"
             />
@@ -90,7 +83,7 @@
               :src="life.images[1]"
               :alt="`${life.title} - 2`"
               container-class="w-full h-full"
-              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              image-class="w-full h-full object-cover"
               placeholder-class="w-full h-full"
               placeholder-icon-class="text-lg"
             />
@@ -98,7 +91,7 @@
               :src="life.images[2]"
               :alt="`${life.title} - 3`"
               container-class="w-full h-full"
-              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              image-class="w-full h-full object-cover"
               placeholder-class="w-full h-full"
               placeholder-icon-class="text-lg"
             />
@@ -113,7 +106,7 @@
               :src="img"
               :alt="`${life.title} - ${i + 1}`"
               container-class="w-full h-full"
-              image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              image-class="w-full h-full object-cover"
               placeholder-class="w-full h-full"
               placeholder-icon-class="text-lg"
             />
@@ -128,10 +121,6 @@
               </span>
             </div>
           </div>
-          <!-- 渐变遮罩 -->
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          ></div>
         </div>
         <!-- 封面图 -->
         <div
@@ -142,13 +131,10 @@
             :src="life.coverImage"
             :alt="life.title"
             container-class="w-full h-48"
-            image-class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            image-class="w-full h-full object-cover"
             placeholder-class="w-full h-48"
             placeholder-icon-class="text-3xl"
           />
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          ></div>
         </div>
         <!-- 无图片时的占位 -->
         <div

@@ -1,7 +1,7 @@
 <template>
   <footer
     :class="[
-      'py-6 md:py-8 text-center mt-12 md:mt-16 transition-colors duration-300',
+      'py-6 md:py-8 text-center transition-colors duration-300',
       isDark ? 'border-t border-white/10' : 'border-t border-gray-300/30',
     ]"
   >

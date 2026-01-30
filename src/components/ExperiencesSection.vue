@@ -12,13 +12,6 @@
       <div
         v-for="(experience, index) in experiences"
         :key="experience.id"
-        v-motion
-        :initial="{ opacity: 0, x: -50 }"
-        :visible="{
-          opacity: 1,
-          x: 0,
-          transition: { duration: 600, delay: index * 100 },
-        }"
         :class="[
           'backdrop-blur-sm rounded-2xl p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2',
           isDark

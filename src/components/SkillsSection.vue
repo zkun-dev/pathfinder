@@ -1,78 +1,124 @@
 <template>
   <section id="技能">
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
       <div
-        v-for="(skill, index) in skills"
+        v-for="skill in skills"
         :key="skill.id"
-        v-motion
-        :initial="{ opacity: 0, y: 20, scale: 0.9 }"
-        :visible="{
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          transition: { duration: 500, delay: index * 50, type: 'spring' },
-        }"
-        :hover="{ scale: 1.1, y: -5 }"
         :class="[
-          'group backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center transition-all duration-500 cursor-pointer',
+          'group relative overflow-hidden rounded-2xl transition-all duration-300',
+          'border hover:shadow-lg hover:-translate-y-1',
           isDark
-            ? 'bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/30 shadow-lg hover:shadow-xl'
-            : 'bg-white/80 hover:bg-white border border-gray-200 hover:border-gray-300 shadow-lg hover:shadow-xl',
+            ? 'bg-gradient-to-br from-gray-800 via-gray-800/95 to-gray-800 border-gray-700 hover:border-blue-500'
+            : 'bg-gradient-to-br from-white via-gray-50/50 to-white border-gray-200 hover:border-blue-300',
         ]"
       >
-        <div class="mb-2 sm:mb-4 relative">
-          <div
+        <!-- 顶部装饰条 -->
+        <div
+          :class="[
+            'absolute top-0 left-0 right-0 h-1',
+            isDark ? 'bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500' : 'bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400',
+          ]"
+        ></div>
+
+        <div class="p-6 pt-7">
+          <!-- 技能图标和名称 -->
+          <div class="flex flex-col items-center text-center mb-4">
+            <div
+              :class="[
+                'w-20 h-20 rounded-2xl flex items-center justify-center mb-3 shadow-lg transition-all duration-300 hover:scale-110 hover:rotate-6',
+                getIconBgClass(skill),
+              ]"
+            >
+              <i
+                :class="[
+                  getIconConfig(skill).icon,
+                  'text-4xl transition-all duration-300',
+                  getIconConfig(skill).color || (isDark ? 'text-blue-400' : 'text-blue-600'),
+                ]"
+              ></i>
+            </div>
+            <h3
+              :class="[
+                'text-lg font-bold mb-1 transition-colors',
+                isDark ? 'text-white' : 'text-gray-900',
+              ]"
+            >
+              {{ skill.name }}
+            </h3>
+            <span
+              v-if="skill.category"
+              :class="[
+                'px-2.5 py-1 text-xs font-medium rounded-full',
+                isDark
+                  ? 'bg-gray-700/60 text-gray-300 border border-gray-600'
+                  : 'bg-gray-100 text-gray-700 border border-gray-200',
+              ]"
+            >
+              {{ skill.category }}
+            </span>
+          </div>
+
+          <!-- 熟练度显示 -->
+          <div class="mb-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium" :class="isDark ? 'text-gray-400' : 'text-gray-500'">
+                熟练度
+              </span>
+              <span
+                :class="[
+                  'text-sm font-bold',
+                  isDark ? 'text-blue-400' : 'text-blue-600',
+                ]"
+              >
+                {{ skill.proficiency || 0 }}/5
+              </span>
+            </div>
+            <!-- 进度条 -->
+            <div
+              :class="[
+                'h-2.5 rounded-full overflow-hidden',
+                isDark ? 'bg-gray-700' : 'bg-gray-200',
+              ]"
+            >
+              <div
+                :class="[
+                  'h-full rounded-full transition-all duration-500',
+                  isDark ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : 'bg-gradient-to-r from-blue-400 to-cyan-400',
+                ]"
+                :style="{ width: `${((skill.proficiency || 0) / 5) * 100}%` }"
+              ></div>
+            </div>
+            <!-- 星级显示 -->
+            <div class="flex items-center justify-center gap-0.5 mt-2">
+              <span
+                v-for="i in 5"
+                :key="i"
+                :class="[
+                  'text-sm transition-all',
+                  i <= (skill.proficiency || 0)
+                    ? isDark
+                      ? 'text-blue-400'
+                      : 'text-blue-500'
+                    : isDark
+                      ? 'text-gray-600'
+                      : 'text-gray-300',
+                ]"
+              >
+                ★
+              </span>
+            </div>
+          </div>
+
+          <!-- 描述 -->
+          <p
+            v-if="skill.description"
             :class="[
-              'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-lg border',
-              getIconBgClass(skill),
+              'text-xs line-clamp-2 text-center transition-colors',
+              isDark ? 'text-gray-300' : 'text-gray-600',
             ]"
           >
-            <i
-              :class="[
-                getIconConfig(skill).icon,
-                'text-lg sm:text-xl md:text-2xl transition-all duration-500',
-                getIconConfig(skill).color || (isDark
-                  ? 'text-blue-400 group-hover:text-blue-300'
-                  : 'text-blue-600 group-hover:text-blue-700'),
-              ]"
-            ></i>
-          </div>
-        </div>
-        <h3
-          :class="[
-            'font-bold text-xs sm:text-sm mb-1 transition-colors duration-300 group-hover:text-blue-500',
-            isDark ? 'text-white' : 'text-gray-900',
-          ]"
-        >
-          {{ skill.name }}
-        </h3>
-        <p
-          v-if="skill.category"
-          :class="[
-            'text-xs mb-2 transition-colors duration-300',
-            isDark ? 'text-gray-500' : 'text-gray-500',
-          ]"
-        >
-          {{ skill.category }}
-        </p>
-        <div
-          v-if="skill.proficiency"
-          class="flex justify-center gap-1 mt-2"
-        >
-          <div
-            v-for="i in 5"
-            :key="i"
-            :class="[
-              'w-1.5 h-1.5 rounded-full transition-all duration-300',
-              i <= (skill.proficiency || 0)
-                ? isDark
-                  ? 'bg-blue-400 group-hover:bg-blue-300 group-hover:scale-125'
-                  : 'bg-blue-500 group-hover:bg-blue-600 group-hover:scale-125'
-                : isDark
-                ? 'bg-white/20'
-                : 'bg-gray-300',
-            ]"
-          ></div>
+            {{ skill.description }}
+          </p>
         </div>
       </div>
     </div>
@@ -86,7 +132,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import EmptyState from '@/components/EmptyState.vue';
 import { getSkillIcon } from '@/utils/skillIcons';

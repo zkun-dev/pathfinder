@@ -15,7 +15,7 @@
 
     <!-- 页面内容 -->
     <div class="relative z-10 container mx-auto px-4 pt-28 pb-20">
-      <Header :nav-items="[]" />
+      <Header :nav-items="NAV_ITEMS" />
 
       <!-- 加载状态 -->
       <div v-if="loading" class="fixed inset-0 flex items-center justify-center overflow-hidden z-20">
@@ -26,9 +26,6 @@
       <div v-else-if="profile" class="max-w-6xl mx-auto">
         <!-- 顶部导航栏 -->
         <div
-          v-motion
-          :initial="{ opacity: 0, y: -20 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }"
           :class="[
             'sticky top-20 z-40 mb-8 backdrop-blur-md rounded-2xl border px-6 py-4 transition-all duration-300',
             isDark
@@ -70,9 +67,6 @@
           <div class="lg:col-span-2 space-y-8">
             <!-- 个人信息卡片 -->
             <div
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 100 } }"
               :class="[
                 'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
                 isDark
@@ -84,9 +78,6 @@
                 <!-- 头像 -->
                 <div
                   v-if="profile.avatarUrl"
-                  v-motion
-                  :initial="{ opacity: 0, scale: 0.8 }"
-                  :enter="{ opacity: 1, scale: 1, transition: { duration: 600, delay: 200 } }"
                   class="flex-shrink-0 relative"
                 >
                   <div
@@ -107,9 +98,6 @@
                 </div>
                 <div
                   v-else
-                  v-motion
-                  :initial="{ opacity: 0, scale: 0.8 }"
-                  :enter="{ opacity: 1, scale: 1, transition: { duration: 600, delay: 200 } }"
                   class="flex-shrink-0 relative"
                 >
                   <div
@@ -165,9 +153,6 @@
 
             <!-- 联系信息卡片 -->
             <div
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
               :class="[
                 'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
                 isDark
@@ -324,9 +309,6 @@
             <!-- 工作经历 -->
             <div
               v-if="experiences.length > 0"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 300 } }"
               :class="[
                 'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
                 isDark
@@ -356,9 +338,6 @@
           <div class="lg:col-span-1 space-y-6">
             <!-- 社交链接卡片 -->
             <div
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 200 } }"
               :class="[
                 'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border sticky top-32',
                 isDark
@@ -409,9 +388,6 @@
 
             <!-- 统计信息卡片 -->
             <div
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 300 } }"
               :class="[
                 'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border',
                 isDark
@@ -480,6 +456,7 @@ import { defineAsyncComponent } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import { NAV_ITEMS } from '@/constants';
 import ExperiencesSection from '@/components/ExperiencesSection.vue';
 import EmptyState from '@/components/EmptyState.vue';
 import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';

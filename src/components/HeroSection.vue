@@ -2,12 +2,7 @@
   <section
     class="min-h-[85vh] flex flex-col justify-center items-center text-center py-10"
   >
-    <div
-      v-motion
-      :initial="{ opacity: 0, y: 30 }"
-      :enter="{ opacity: 1, y: 0, transition: { duration: 800 } }"
-      class="mb-8"
-    >
+    <div class="mb-8">
       <div
         :class="[
           'relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-6 sm:mb-8 rounded-full overflow-hidden border-4 shadow-2xl transition-all duration-500 hover:scale-110 hover:rotate-6',
@@ -31,13 +26,6 @@
     </div>
 
     <h1
-      v-motion
-      :initial="{ opacity: 0, y: 20 }"
-      :enter="{
-        opacity: 1,
-        y: 0,
-        transition: { duration: 600, delay: 200 },
-      }"
       :class="[
         'text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold mb-4 transition-colors duration-300 px-4',
         isDark ? 'text-white' : 'text-gray-900',
@@ -52,13 +40,6 @@
     </h1>
 
     <h2
-      v-motion
-      :initial="{ opacity: 0, y: 20 }"
-      :enter="{
-        opacity: 1,
-        y: 0,
-        transition: { duration: 600, delay: 400 },
-      }"
       :class="[
         'text-2xl md:text-3xl font-light mb-6 transition-colors duration-300',
         isDark ? 'text-gray-300' : 'text-gray-600',
@@ -69,13 +50,6 @@
 
     <p
       v-if="profile.bio"
-      v-motion
-      :initial="{ opacity: 0, y: 20 }"
-      :enter="{
-        opacity: 1,
-        y: 0,
-        transition: { duration: 600, delay: 600 },
-      }"
       :class="[
         'max-w-2xl mx-auto text-lg leading-relaxed mb-12 transition-colors duration-300',
         isDark ? 'text-gray-400' : 'text-gray-500',
@@ -85,16 +59,7 @@
     </p>
 
     <!-- 统计信息卡片 -->
-    <div
-      v-motion
-      :initial="{ opacity: 0, y: 20 }"
-      :enter="{
-        opacity: 1,
-        y: 0,
-        transition: { duration: 600, delay: 800 },
-      }"
-      class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-3xl mx-auto w-full px-4"
-    >
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-3xl mx-auto w-full px-4">
       <router-link
         to="/projects"
         :class="[

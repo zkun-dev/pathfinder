@@ -14,13 +14,6 @@
         <div
           v-for="(experience, index) in experiences"
           :key="experience.id"
-          v-motion
-          :initial="{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }"
-          :visible="{
-            opacity: 1,
-            x: 0,
-            transition: { duration: 600, delay: index * 100 },
-          }"
           :class="[
             'relative flex flex-col md:flex-row items-start md:items-center',
             index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse',

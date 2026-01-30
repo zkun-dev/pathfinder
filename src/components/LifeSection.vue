@@ -12,13 +12,6 @@
       <article
         v-for="(life, index) in lifePosts"
         :key="life.id"
-        v-motion
-        :initial="{ opacity: 0, y: 50 }"
-        :visible="{
-          opacity: 1,
-          y: 0,
-          transition: { duration: 600, delay: index * 100 },
-        }"
         :class="[
           'group backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-3',
           isDark

@@ -272,11 +272,56 @@
                   <i class="fa-solid fa-tag text-xs mr-1.5"></i>
                   类型
                 </label>
+                <div class="relative group">
+                  <select
+                    v-model="form.type"
+                    :class="[
+                      inputClass,
+                      'pr-12 appearance-none cursor-pointer',
+                    ]"
+                    :style="!form.type ? (isDark ? { color: '#9ca3af' } : { color: '#9ca3af' }) : {}"
+                  >
+                    <option value="" disabled hidden>请选择类型</option>
+                    <option value="工作项目">工作项目</option>
+                    <option value="个人项目">个人项目</option>
+                    <option value="开源项目">开源项目</option>
+                    <option value="学习项目">学习项目</option>
+                    <option value="商业项目">商业项目</option>
+                    <option value="其他">其他</option>
+                  </select>
+                  <!-- 下拉箭头 -->
+                  <div
+                    :class="[
+                      'absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-0',
+                      'flex items-center justify-center w-5 h-5 rounded-md',
+                      isDark ? 'text-gray-400' : 'text-gray-500'
+                    ]"
+                  >
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                  </div>
+                  <!-- 清空按钮 -->
+                  <button
+                    v-if="form.type"
+                    @click.stop="form.type = ''"
+                    type="button"
+                    :class="[
+                      'absolute right-10 top-1/2 -translate-y-1/2 z-10',
+                      'w-6 h-6 flex items-center justify-center rounded-lg',
+                      'transition-all duration-200',
+                      isDark 
+                        ? 'text-gray-500 hover:text-white hover:bg-gray-700/80 active:scale-95' 
+                        : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100 active:scale-95'
+                    ]"
+                  >
+                    <i class="fa-solid fa-times text-xs"></i>
+                  </button>
+                </div>
                 <input
-                  v-model="form.type"
+                  v-if="form.type === '其他'"
+                  v-model="form.customType"
                   type="text"
-                  placeholder="工作项目/个人项目/开源项目"
-                  :class="inputClass"
+                  :class="[inputClass, 'mt-2']"
+                  placeholder="请输入自定义类型"
                 />
               </div>
               <div>
@@ -498,6 +543,7 @@ const form = ref({
   coverImage: '',
   images: [] as string[],
   type: '',
+  customType: '',
   featured: false,
   startDate: '',
   endDate: '',
@@ -531,6 +577,7 @@ const resetForm = () => {
     coverImage: '',
     images: [],
     type: '',
+    customType: '',
     featured: false,
     startDate: '',
     endDate: '',
@@ -557,13 +604,19 @@ const loadProjects = async () => {
 
 const editProject = (project: Project) => {
   editingProject.value = project;
+  const type = project.type || '';
+  // 检查是否是预设类型
+  const presetTypes = ['工作项目', '个人项目', '开源项目', '学习项目', '商业项目'];
+  const isPresetType = presetTypes.includes(type);
+  
   form.value = {
     title: project.title,
     description: project.description || '',
     content: project.content || '',
     coverImage: project.coverImage || '',
     images: project.images || [],
-    type: project.type || '',
+    type: isPresetType ? type : '其他',
+    customType: isPresetType ? '' : type,
     featured: project.featured,
     startDate: project.startDate ? new Date(project.startDate).toISOString().split('T')[0] : '',
     endDate: project.endDate ? new Date(project.endDate).toISOString().split('T')[0] : '',
@@ -581,8 +634,10 @@ const handleSubmit = async () => {
     loading.value = true;
     error.value = null;
 
+    // 处理类型：如果选择了"其他"，使用自定义类型
     const submitData: any = {
       ...form.value,
+      type: form.value.type === '其他' ? form.value.customType : form.value.type,
       techStack: techStackText.value
         .split('\n')
         .map((t) => t.trim())
@@ -591,6 +646,8 @@ const handleSubmit = async () => {
       startDate: form.value.startDate ? new Date(form.value.startDate).toISOString() : null,
       endDate: form.value.endDate ? new Date(form.value.endDate).toISOString() : null,
     };
+    // 删除 customType，不需要提交到后端
+    delete submitData.customType;
 
     if (editingProject.value) {
       await projectApi.updateProject(editingProject.value.id, submitData);

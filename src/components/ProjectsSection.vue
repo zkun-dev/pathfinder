@@ -5,9 +5,6 @@
         v-for="project in projects"
         :key="project.id"
         :to="`/project/${project.id}`"
-        v-motion
-        :initial="{ opacity: 0, y: 50 }"
-        :visible="{ opacity: 1, y: 0, transition: { duration: 600 } }"
         :class="[
           'group relative overflow-hidden rounded-2xl transition-all duration-300 block cursor-pointer',
           'border hover:shadow-lg hover:-translate-y-1',
@@ -45,11 +42,10 @@
             :src="project.coverImage"
             :alt="project.title"
             container-class="w-full h-48"
-            image-class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+            image-class="w-full h-full object-cover"
             placeholder-class="w-full h-48"
             placeholder-icon-class="text-4xl"
           />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
         </div>
         <div
           v-else

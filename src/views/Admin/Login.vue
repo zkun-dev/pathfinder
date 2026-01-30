@@ -16,9 +16,6 @@
     <!-- 登录表单 -->
     <div class="relative z-10 w-full max-w-md px-4">
       <div
-        v-motion
-        :initial="{ opacity: 0, y: 30 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
         :class="[
           'backdrop-blur-md rounded-2xl p-8 md:p-10 shadow-2xl border transition-all duration-300',
           isDark
@@ -27,12 +24,7 @@
         ]"
       >
         <!-- Logo和标题 -->
-        <div
-          v-motion
-          :initial="{ opacity: 0, y: -20 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 100 } }"
-          class="text-center mb-8"
-        >
+        <div class="text-center mb-8">
           <div
             :class="[
               'inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4 transition-all duration-300',
@@ -74,9 +66,6 @@
 
         <!-- 登录表单 -->
         <form
-          v-motion
-          :initial="{ opacity: 0, y: 20 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
           @submit.prevent="handleLogin"
           class="space-y-6"
         >
@@ -171,9 +160,6 @@
           <!-- 错误提示 -->
           <div
             v-if="error"
-            v-motion
-            :initial="{ opacity: 0, scale: 0.95 }"
-            :enter="{ opacity: 1, scale: 1, transition: { duration: 300 } }"
             :class="[
               'p-4 rounded-xl border backdrop-blur-sm transition-all duration-300',
               isDark
@@ -212,12 +198,7 @@
         </form>
 
         <!-- 底部提示 -->
-        <div
-          v-motion
-          :initial="{ opacity: 0 }"
-          :enter="{ opacity: 1, transition: { duration: 600, delay: 400 } }"
-          class="mt-6 text-center"
-        >
+        <div class="mt-6 text-center">
           <p
             :class="[
               'text-xs transition-colors',

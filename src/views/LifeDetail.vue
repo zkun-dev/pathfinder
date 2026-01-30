@@ -15,7 +15,7 @@
 
     <!-- 页面内容 -->
     <div class="relative z-10 container mx-auto px-4 pt-28 pb-8">
-      <Header :nav-items="[]" />
+      <Header :nav-items="NAV_ITEMS" />
 
       <!-- 加载状态 -->
       <div v-if="loading" class="fixed inset-0 flex items-center justify-center overflow-hidden z-20">
@@ -47,18 +47,8 @@
 
       <!-- 生活动态详情 -->
       <div v-else-if="life" class="max-w-6xl mx-auto">
-        <!-- 顶部导航栏 - 固定在顶部 -->
-        <div
-          v-motion
-          :initial="{ opacity: 0, y: -20 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }"
-          :class="[
-            'sticky top-20 z-40 mb-8 backdrop-blur-md rounded-2xl border px-6 py-4 transition-all duration-300',
-            isDark
-              ? 'bg-black/50 border-white/10 shadow-xl'
-              : 'bg-white/80 border-gray-200 shadow-lg',
-          ]"
-        >
+        <!-- 顶部导航栏 -->
+        <div class="sticky top-20 z-40 mb-8 pb-4 border-b" :class="isDark ? 'border-white/10' : 'border-gray-200'">
           <div class="flex items-center justify-between gap-4">
             <button
               @click="$router.back()"
@@ -91,9 +81,6 @@
         <!-- 图片轮播/封面 -->
         <div
           v-if="life.images && life.images.length > 0"
-          v-motion
-          :initial="{ opacity: 0, scale: 0.95 }"
-          :enter="{ opacity: 1, scale: 1, transition: { duration: 800 } }"
           class="relative mb-12 rounded-3xl overflow-hidden shadow-2xl group"
         >
           <div class="aspect-video w-full relative">
@@ -164,21 +151,10 @@
         </div>
 
         <!-- 无图片时的标题区域 -->
-        <div
-          v-else
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
-          :class="[
-            'backdrop-blur-md rounded-2xl p-8 mb-8 transition-colors shadow-xl border',
-            isDark
-              ? 'bg-white/10 border-white/10'
-              : 'bg-white/80 border-gray-200',
-          ]"
-        >
+        <div v-else class="mb-12">
           <h1
             :class="[
-              'text-4xl md:text-6xl font-bold mb-4 transition-colors',
+              'text-4xl md:text-6xl font-bold mb-4',
               isDark ? 'text-white' : 'text-gray-900',
             ]"
           >
@@ -186,7 +162,7 @@
           </h1>
           <div
             :class="[
-              'flex items-center gap-4 text-lg transition-colors',
+              'flex items-center gap-4 text-base',
               isDark ? 'text-gray-400' : 'text-gray-600',
             ]"
           >
@@ -201,94 +177,53 @@
           </div>
         </div>
 
-        <!-- 主要内容区域 - 两栏布局 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          <!-- 左侧主内容区 -->
-          <div class="lg:col-span-2 space-y-8">
-            <!-- 内容 -->
-            <div
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
+        <!-- 主要内容区域 -->
+        <div class="space-y-12 mb-12">
+          <!-- 内容 -->
+          <section class="space-y-4 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <div 
+              v-html="formatMarkdown(life.content)"
+              :class="[
+                'prose prose-lg max-w-none',
+                isDark ? 'prose-invert' : '',
+              ]"
+            ></div>
+          </section>
+
+          <!-- 更多图片 -->
+          <section v-if="life.images && life.images.length > 1" class="space-y-6 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <h2
+              :class="[
+                'text-2xl font-bold',
+                isDark ? 'text-white' : 'text-gray-900',
+              ]"
             >
+              更多图片
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div
-                :class="[
-                  'backdrop-blur-md rounded-2xl p-8 md:p-10 transition-colors shadow-xl border',
-                  isDark
-                    ? 'bg-white/10 border-white/10'
-                    : 'bg-white/80 border-gray-200',
-                ]"
+                v-for="(image, index) in life.images"
+                :key="index"
+                class="group relative overflow-hidden rounded-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                @click="currentImageIndex = index"
               >
-                <div 
-                  v-html="formatMarkdown(life.content)"
-                  :class="[
-                    'prose prose-lg max-w-none',
-                    isDark ? 'prose-invert' : '',
-                  ]"
-                ></div>
+                <ImageWithPlaceholder
+                  :src="image"
+                  :alt="`${life.title} - 图片 ${index + 1}`"
+                  container-class="w-full h-64"
+                  image-class="w-full h-64 object-cover"
+                  placeholder-class="w-full h-64"
+                  placeholder-icon-class="text-2xl"
+                />
               </div>
             </div>
+          </section>
 
-            <!-- 图片网格 -->
-            <div
-              v-if="life.images && life.images.length > 1"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 400 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
-              <h2
-                :class="[
-                  'text-2xl font-bold mb-6 transition-colors',
-                  isDark ? 'text-white' : 'text-gray-900',
-                ]"
-              >
-                更多图片
-              </h2>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div
-                  v-for="(image, index) in life.images"
-                  :key="index"
-                  class="group relative rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-                  @click="currentImageIndex = index"
-                >
-                  <ImageWithPlaceholder
-                    :src="image"
-                    :alt="`${life.title} - 图片 ${index + 1}`"
-                    container-class="w-full h-64"
-                    image-class="w-full h-64 object-cover"
-                    placeholder-class="w-full h-64"
-                    placeholder-icon-class="text-2xl"
-                  />
-                  <div
-                    class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 右侧边栏 -->
-          <div class="lg:col-span-1 space-y-6">
-            <!-- 标签卡片 -->
-            <div
-              v-if="life.tags && life.tags.length > 0"
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 300 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border sticky top-32',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
-              <div class="flex items-center gap-2 mb-4">
+          <!-- 标签和信息 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <!-- 标签 -->
+            <div v-if="life.tags && life.tags.length > 0" class="space-y-4">
+              <div class="flex items-center gap-2">
                 <i
                   :class="[
                     'fa-solid fa-tags text-xl',
@@ -297,7 +232,7 @@
                 ></i>
                 <h3
                   :class="[
-                    'text-xl font-bold transition-colors',
+                    'text-xl font-bold',
                     isDark ? 'text-white' : 'text-gray-900',
                   ]"
                 >
@@ -309,10 +244,10 @@
                   v-for="tag in life.tags"
                   :key="tag"
                   :class="[
-                    'px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105',
+                    'px-3 py-1.5 rounded-lg text-sm font-medium',
                     isDark
-                      ? 'bg-pink-500/20 text-pink-300 border border-pink-500/30 hover:border-pink-400/50'
-                      : 'bg-pink-100 text-pink-700 border border-pink-200 hover:border-pink-300',
+                      ? 'bg-pink-500/20 text-pink-300 border border-pink-500/30'
+                      : 'bg-pink-100 text-pink-700 border border-pink-200',
                   ]"
                 >
                   #{{ tag }}
@@ -320,18 +255,8 @@
               </div>
             </div>
 
-            <!-- 信息卡片 -->
-            <div
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 400 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
+            <!-- 信息 -->
+            <div class="space-y-4">
               <h3
                 :class="[
                   'text-xl font-bold mb-4 transition-colors',
@@ -436,6 +361,7 @@ import { defineAsyncComponent } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
 import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
+import { NAV_ITEMS } from '@/constants';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import { lifeApi } from '@/services/api';
 import { logger } from '@/utils/logger';

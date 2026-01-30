@@ -307,10 +307,46 @@
                   <i class="fa-solid fa-circle-check text-xs mr-1.5"></i>
                   状态
                 </label>
-                <select v-model="form.status" :class="inputClass">
-                  <option value="进行中">进行中</option>
-                  <option value="已完成">已完成</option>
-                </select>
+                <div class="relative group">
+                  <select
+                    v-model="form.status"
+                    :class="[
+                      inputClass,
+                      'pr-12 appearance-none cursor-pointer',
+                    ]"
+                    :style="!form.status ? (isDark ? { color: '#9ca3af' } : { color: '#9ca3af' }) : {}"
+                  >
+                    <option value="" disabled hidden>请选择状态</option>
+                    <option value="进行中">进行中</option>
+                    <option value="已完成">已完成</option>
+                  </select>
+                  <!-- 下拉箭头 -->
+                  <div
+                    :class="[
+                      'absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-0',
+                      'flex items-center justify-center w-5 h-5 rounded-md',
+                      isDark ? 'text-gray-400' : 'text-gray-500'
+                    ]"
+                  >
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                  </div>
+                  <!-- 清空按钮 -->
+                  <button
+                    v-if="form.status"
+                    @click.stop="form.status = ''"
+                    type="button"
+                    :class="[
+                      'absolute right-10 top-1/2 -translate-y-1/2 z-10',
+                      'w-6 h-6 flex items-center justify-center rounded-lg',
+                      'transition-all duration-200',
+                      isDark 
+                        ? 'text-gray-500 hover:text-white hover:bg-gray-700/80 active:scale-95' 
+                        : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100 active:scale-95'
+                    ]"
+                  >
+                    <i class="fa-solid fa-times text-xs"></i>
+                  </button>
+                </div>
               </div>
             </div>
             <div>

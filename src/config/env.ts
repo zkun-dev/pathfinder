@@ -6,7 +6,6 @@ export interface EnvConfig {
   isDev: boolean
   isProd: boolean
   API_TIMEOUT: number
-  enableDebugLog: boolean
   showDetailedErrors: boolean
 }
 
@@ -75,7 +74,6 @@ const createEnvConfig = (): EnvConfig => ({
   isDev,
   isProd,
   API_TIMEOUT: getApiTimeout(),
-  enableDebugLog: isDev,
   showDetailedErrors: isDev,
 })
 

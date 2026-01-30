@@ -15,7 +15,7 @@
 
     <!-- 页面内容 -->
     <div class="relative z-10 container mx-auto px-4 pt-28 pb-8">
-      <Header :nav-items="[]" />
+      <Header :nav-items="NAV_ITEMS" />
 
       <!-- 加载状态 -->
       <div v-if="loading" class="fixed inset-0 flex items-center justify-center overflow-hidden z-20">
@@ -44,18 +44,8 @@
 
       <!-- 项目详情 -->
       <div v-else-if="project" class="max-w-6xl mx-auto">
-        <!-- 顶部导航栏 - 固定在顶部 -->
-        <div
-          v-motion
-          :initial="{ opacity: 0, y: -20 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 400 } }"
-          :class="[
-            'sticky top-16 sm:top-20 z-40 mb-6 sm:mb-8 backdrop-blur-md rounded-xl sm:rounded-2xl border px-4 sm:px-6 py-3 sm:py-4 transition-all duration-300',
-            isDark
-              ? 'bg-black/50 border-white/10 shadow-xl'
-              : 'bg-white/80 border-gray-200 shadow-lg',
-          ]"
-        >
+        <!-- 顶部导航栏 -->
+        <div class="sticky top-16 sm:top-20 z-40 mb-8 pb-4 border-b" :class="isDark ? 'border-white/10' : 'border-gray-200'">
           <div class="flex items-center justify-between gap-2 sm:gap-4">
             <button
               @click="$router.back()"
@@ -97,9 +87,6 @@
         <!-- 封面图 - 全宽大图 -->
         <div
           v-if="project.coverImage"
-          v-motion
-          :initial="{ opacity: 0, scale: 0.95 }"
-          :enter="{ opacity: 1, scale: 1, transition: { duration: 800 } }"
           class="relative mb-12 rounded-3xl overflow-hidden shadow-2xl group"
         >
           <div class="aspect-video w-full relative">
@@ -138,9 +125,6 @@
         <!-- 无封面图时的标题区域 -->
         <div
           v-else
-          v-motion
-          :initial="{ opacity: 0, y: 30 }"
-          :enter="{ opacity: 1, y: 0, transition: { duration: 600 } }"
           class="mb-12"
         >
           <div class="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
@@ -171,194 +155,239 @@
           </p>
         </div>
 
-        <!-- 主要内容区域 - 两栏布局 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
-          <!-- 左侧主内容区 -->
-          <div class="lg:col-span-2 space-y-6 sm:space-y-8">
-            <!-- 项目信息卡片 -->
-            <div
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200 } }"
-              :class="[
-                'backdrop-blur-md rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 transition-colors shadow-xl border',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
+        <!-- 主要内容区域 -->
+        <div class="space-y-12 mb-12">
+          <!-- 项目信息 -->
+          <section class="space-y-6 pt-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div
+                :class="[
+                  'w-12 h-12 rounded-xl flex items-center justify-center',
+                  isDark
+                    ? 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30'
+                    : 'bg-gradient-to-br from-blue-100 to-cyan-100 border border-blue-200',
+                ]"
+              >
+                <i
+                  :class="[
+                    'fa-solid fa-info-circle text-xl',
+                    isDark ? 'text-blue-400' : 'text-blue-600',
+                  ]"
+                ></i>
+              </div>
               <h2
                 :class="[
-                  'text-xl sm:text-2xl font-bold mb-4 sm:mb-6 transition-colors',
+                  'text-2xl font-bold',
                   isDark ? 'text-white' : 'text-gray-900',
                 ]"
               >
                 项目信息
               </h2>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                <!-- 项目类型 -->
-                <div v-if="project.type">
-                  <div class="flex items-center gap-2 mb-2">
-                    <i
-                      :class="[
-                        'fa-solid fa-tag text-lg',
-                        isDark ? 'text-blue-400' : 'text-blue-600',
-                      ]"
-                    ></i>
-                    <span
-                      :class="[
-                        'text-sm font-semibold uppercase tracking-wider',
-                        isDark ? 'text-gray-400' : 'text-gray-500',
-                      ]"
-                    >
-                      项目类型
-                    </span>
-                  </div>
-                  <p
-                    :class="[
-                      'text-lg font-medium transition-colors',
-                      isDark ? 'text-white' : 'text-gray-900',
-                    ]"
-                  >
-                    {{ project.type }}
-                  </p>
-                </div>
-
-                <!-- 时间信息 -->
-                <div v-if="project.startDate || project.endDate">
-                  <div class="flex items-center gap-2 mb-2">
-                    <i
-                      :class="[
-                        'fa-solid fa-calendar text-lg',
-                        isDark ? 'text-purple-400' : 'text-purple-600',
-                      ]"
-                    ></i>
-                    <span
-                      :class="[
-                        'text-sm font-semibold uppercase tracking-wider',
-                        isDark ? 'text-gray-400' : 'text-gray-500',
-                      ]"
-                    >
-                      项目时间
-                    </span>
-                  </div>
-                  <p
-                    :class="[
-                      'text-lg font-medium transition-colors',
-                      isDark ? 'text-white' : 'text-gray-900',
-                    ]"
-                  >
-                    <span v-if="project.startDate">{{ formatDate(project.startDate) }}</span>
-                    <span v-if="project.startDate && project.endDate"> - </span>
-                    <span v-if="project.endDate">{{ formatDate(project.endDate) }}</span>
-                    <span v-if="!project.endDate && project.startDate"> 至今</span>
-                  </p>
-                </div>
-              </div>
             </div>
-
-            <!-- 详细内容 -->
-            <div
-              v-if="project.content"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 400 } }"
-              :class="[
-                'prose prose-lg max-w-none',
-                isDark ? 'prose-invert' : '',
-              ]"
-            >
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <!-- 项目类型 -->
               <div
+                v-if="project.type"
                 :class="[
-                  'backdrop-blur-md rounded-2xl p-8 md:p-10 transition-colors shadow-xl border',
+                  'p-6 rounded-xl space-y-3 transition-all duration-300 hover:scale-[1.02]',
                   isDark
-                    ? 'bg-white/10 border-white/10'
-                    : 'bg-white/80 border-gray-200',
+                    ? 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20'
+                    : 'bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200/50',
                 ]"
               >
-                <h2
-                  :class="[
-                    'text-2xl font-bold mb-6 transition-colors',
-                    isDark ? 'text-white' : 'text-gray-900',
-                  ]"
-                >
-                  项目概述
-                </h2>
-                <div v-html="formatMarkdown(project.content)"></div>
-              </div>
-            </div>
-
-            <!-- 图片集 -->
-            <div
-              v-if="project.images && project.images.length > 0"
-              v-motion
-              :initial="{ opacity: 0, y: 30 }"
-              :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 500 } }"
-            >
-              <div
-                :class="[
-                  'backdrop-blur-md rounded-2xl p-8 transition-colors shadow-xl border',
-                  isDark
-                    ? 'bg-white/10 border-white/10'
-                    : 'bg-white/80 border-gray-200',
-                ]"
-              >
-                <h2
-                  :class="[
-                    'text-2xl font-bold mb-6 transition-colors',
-                    isDark ? 'text-white' : 'text-gray-900',
-                  ]"
-                >
-                  项目截图
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex items-center gap-3">
                   <div
-                    v-for="(image, index) in project.images"
-                    :key="index"
-                    class="group relative rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]"
+                    :class="[
+                      'w-10 h-10 rounded-lg flex items-center justify-center',
+                      isDark
+                        ? 'bg-blue-500/20 text-blue-400'
+                        : 'bg-blue-100 text-blue-600',
+                    ]"
                   >
-                    <ImageWithPlaceholder
-                      :src="image"
-                      :alt="`${project.title} - 图片 ${index + 1}`"
-                      container-class="w-full"
-                      image-class="w-full h-auto object-cover"
-                      placeholder-class="w-full h-64"
-                      placeholder-icon-class="text-3xl"
-                    />
-                    <div
-                      class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
-                    ></div>
+                    <i class="fa-solid fa-tag"></i>
                   </div>
+                  <span
+                    :class="[
+                      'text-sm font-semibold uppercase tracking-wider',
+                      isDark ? 'text-gray-400' : 'text-gray-500',
+                    ]"
+                  >
+                    项目类型
+                  </span>
                 </div>
+                <p
+                  :class="[
+                    'text-xl font-semibold',
+                    isDark ? 'text-white' : 'text-gray-900',
+                  ]"
+                >
+                  {{ project.type }}
+                </p>
+              </div>
+
+              <!-- 时间信息 -->
+              <div
+                v-if="project.startDate || project.endDate"
+                :class="[
+                  'p-6 rounded-xl space-y-3 transition-all duration-300 hover:scale-[1.02]',
+                  isDark
+                    ? 'bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20'
+                    : 'bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200/50',
+                ]"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    :class="[
+                      'w-10 h-10 rounded-lg flex items-center justify-center',
+                      isDark
+                        ? 'bg-purple-500/20 text-purple-400'
+                        : 'bg-purple-100 text-purple-600',
+                    ]"
+                  >
+                    <i class="fa-solid fa-calendar"></i>
+                  </div>
+                  <span
+                    :class="[
+                      'text-sm font-semibold uppercase tracking-wider',
+                      isDark ? 'text-gray-400' : 'text-gray-500',
+                    ]"
+                  >
+                    项目时间
+                  </span>
+                </div>
+                <p
+                  :class="[
+                    'text-xl font-semibold',
+                    isDark ? 'text-white' : 'text-gray-900',
+                  ]"
+                >
+                  <span v-if="project.startDate">{{ formatDate(project.startDate) }}</span>
+                  <span v-if="project.startDate && project.endDate"> - </span>
+                  <span v-if="project.endDate">{{ formatDate(project.endDate) }}</span>
+                  <span v-if="!project.endDate && project.startDate"> 至今</span>
+                </p>
               </div>
             </div>
-          </div>
+          </section>
 
-          <!-- 右侧边栏 -->
-          <div class="lg:col-span-1 space-y-6">
-            <!-- 技术栈卡片 -->
-            <div
-              v-if="project.techStack && project.techStack.length > 0"
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 300 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border sticky top-32',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
-              <div class="flex items-center gap-2 mb-4">
+          <!-- 项目概述 -->
+          <section v-if="project.content" class="space-y-6 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <div class="flex items-center gap-3 mb-6">
+              <div
+                :class="[
+                  'w-12 h-12 rounded-xl flex items-center justify-center',
+                  isDark
+                    ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30'
+                    : 'bg-gradient-to-br from-green-100 to-emerald-100 border border-green-200',
+                ]"
+              >
                 <i
                   :class="[
-                    'fa-solid fa-code text-xl',
-                    isDark ? 'text-blue-400' : 'text-blue-600',
+                    'fa-solid fa-file-text text-xl',
+                    isDark ? 'text-green-400' : 'text-green-600',
                   ]"
                 ></i>
+              </div>
+              <h2
+                :class="[
+                  'text-2xl font-bold',
+                  isDark ? 'text-white' : 'text-gray-900',
+                ]"
+              >
+                项目概述
+              </h2>
+            </div>
+            <div
+              :class="[
+                'prose prose-lg max-w-none p-6 rounded-xl',
+                isDark
+                  ? 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50 prose-invert'
+                  : 'bg-gradient-to-br from-gray-50 to-white border border-gray-200/50',
+              ]"
+            >
+              <div v-html="formatMarkdown(project.content)"></div>
+            </div>
+          </section>
+
+          <!-- 项目截图 -->
+          <section v-if="project.images && project.images.length > 0" class="space-y-6 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <div class="flex items-center gap-3 mb-6">
+              <div
+                :class="[
+                  'w-12 h-12 rounded-xl flex items-center justify-center',
+                  isDark
+                    ? 'bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30'
+                    : 'bg-gradient-to-br from-orange-100 to-red-100 border border-orange-200',
+                ]"
+              >
+                <i
+                  :class="[
+                    'fa-solid fa-images text-xl',
+                    isDark ? 'text-orange-400' : 'text-orange-600',
+                  ]"
+                ></i>
+              </div>
+              <h2
+                :class="[
+                  'text-2xl font-bold',
+                  isDark ? 'text-white' : 'text-gray-900',
+                ]"
+              >
+                项目截图
+              </h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div
+                v-for="(image, index) in project.images"
+                :key="index"
+                :class="[
+                  'group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.02] min-h-64 shadow-lg',
+                  isDark
+                    ? 'border border-gray-700/50 hover:border-orange-500/50'
+                    : 'border border-gray-200 hover:border-orange-300',
+                ]"
+              >
+                <ImageWithPlaceholder
+                  :src="image"
+                  :alt="`${project.title} - 图片 ${index + 1}`"
+                  container-class="w-full h-64"
+                  image-class="w-full h-full object-cover"
+                  placeholder-class="w-full h-full"
+                  placeholder-icon-class="text-3xl"
+                />
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                ></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 技术栈和链接 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t" :class="isDark ? 'border-white/10' : 'border-gray-200'">
+            <!-- 技术栈 -->
+            <div
+              v-if="project.techStack && project.techStack.length > 0"
+              :class="[
+                'p-6 rounded-xl space-y-4',
+                isDark
+                  ? 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20'
+                  : 'bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200/50',
+              ]"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  :class="[
+                    'w-10 h-10 rounded-lg flex items-center justify-center',
+                    isDark
+                      ? 'bg-blue-500/20 text-blue-400'
+                      : 'bg-blue-100 text-blue-600',
+                  ]"
+                >
+                  <i class="fa-solid fa-code"></i>
+                </div>
                 <h3
                   :class="[
-                    'text-xl font-bold transition-colors',
+                    'text-xl font-bold',
                     isDark ? 'text-white' : 'text-gray-900',
                   ]"
                 >
@@ -370,10 +399,10 @@
                   v-for="tech in project.techStack"
                   :key="tech"
                   :class="[
-                    'px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105',
+                    'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105',
                     isDark
-                      ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-500/30 hover:border-blue-400/50'
-                      : 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 border border-blue-200 hover:border-blue-300',
+                      ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:border-blue-400/50'
+                      : 'bg-blue-100 text-blue-700 border border-blue-200 hover:border-blue-300',
                   ]"
                 >
                   {{ tech }}
@@ -381,27 +410,36 @@
               </div>
             </div>
 
-            <!-- 操作按钮卡片 -->
+            <!-- 相关链接 -->
             <div
               v-if="project.links"
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 400 } }"
               :class="[
-                'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border',
+                'p-6 rounded-xl space-y-4',
                 isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
+                  ? 'bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20'
+                  : 'bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200/50',
               ]"
             >
-              <h3
-                :class="[
-                  'text-xl font-bold mb-4 transition-colors',
-                  isDark ? 'text-white' : 'text-gray-900',
-                ]"
-              >
-                相关链接
-              </h3>
+              <div class="flex items-center gap-3">
+                <div
+                  :class="[
+                    'w-10 h-10 rounded-lg flex items-center justify-center',
+                    isDark
+                      ? 'bg-purple-500/20 text-purple-400'
+                      : 'bg-purple-100 text-purple-600',
+                  ]"
+                >
+                  <i class="fa-solid fa-link"></i>
+                </div>
+                <h3
+                  :class="[
+                    'text-xl font-bold',
+                    isDark ? 'text-white' : 'text-gray-900',
+                  ]"
+                >
+                  相关链接
+                </h3>
+              </div>
               <div class="space-y-3">
                 <a
                   v-if="project.links.demo"
@@ -411,8 +449,8 @@
                   :class="[
                     'w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg',
                     isDark
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white hover:shadow-blue-500/50'
-                      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white hover:shadow-blue-500/30',
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
+                      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white',
                   ]"
                 >
                   <i class="fa-solid fa-external-link"></i>
@@ -435,68 +473,6 @@
                 </a>
               </div>
             </div>
-
-            <!-- 快速导航卡片 -->
-            <div
-              v-motion
-              :initial="{ opacity: 0, x: 30 }"
-              :enter="{ opacity: 1, x: 0, transition: { duration: 600, delay: 500 } }"
-              :class="[
-                'backdrop-blur-md rounded-2xl p-6 transition-colors shadow-xl border',
-                isDark
-                  ? 'bg-white/10 border-white/10'
-                  : 'bg-white/80 border-gray-200',
-              ]"
-            >
-              <h3
-                :class="[
-                  'text-xl font-bold mb-4 transition-colors',
-                  isDark ? 'text-white' : 'text-gray-900',
-                ]"
-              >
-                快速导航
-              </h3>
-              <div class="space-y-2">
-                <button
-                  @click="scrollToSection('info')"
-                  :class="[
-                    'w-full text-left px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105',
-                    isDark
-                      ? 'text-gray-300 hover:text-white hover:bg-white/10'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
-                  ]"
-                >
-                  <i class="fa-solid fa-info-circle mr-2"></i>
-                  项目信息
-                </button>
-                <button
-                  v-if="project.content"
-                  @click="scrollToSection('content')"
-                  :class="[
-                    'w-full text-left px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105',
-                    isDark
-                      ? 'text-gray-300 hover:text-white hover:bg-white/10'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
-                  ]"
-                >
-                  <i class="fa-solid fa-file-text mr-2"></i>
-                  项目概述
-                </button>
-                <button
-                  v-if="project.images && project.images.length > 0"
-                  @click="scrollToSection('images')"
-                  :class="[
-                    'w-full text-left px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105',
-                    isDark
-                      ? 'text-gray-300 hover:text-white hover:bg-white/10'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
-                  ]"
-                >
-                  <i class="fa-solid fa-images mr-2"></i>
-                  项目截图
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -513,6 +489,7 @@ import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
 import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import { NAV_ITEMS } from '@/constants';
 import { projectApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import { renderMarkdown } from '@/utils/markdown';
@@ -553,20 +530,6 @@ const formatDate = (dateString: string) => {
 
 const formatMarkdown = (content: string) => {
   return renderMarkdown(content);
-};
-
-const scrollToSection = (sectionId: string) => {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    const headerOffset = 100;
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth',
-    });
-  }
 };
 
 onMounted(() => {

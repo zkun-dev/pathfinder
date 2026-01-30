@@ -50,8 +50,6 @@ async function request<T>(
   if (isFormData) delete headers['Content-Type']
 
   try {
-    logger.debug(`API Request: ${method} ${url}`)
-
     const response = await fetch(url, {
       ...options,
       method,
@@ -85,7 +83,6 @@ async function request<T>(
       throw new Error(errorData.error || errorData.message || `请求失败 (${response.status})`)
     }
 
-    logger.debug(`API Response: ${response.status} - ${endpoint}`)
     return responseData as T
   } catch (error) {
     if (error instanceof Error) {
@@ -241,7 +238,6 @@ export const uploadApi = {
     formData.append('file', file)
 
     try {
-      logger.debug(`Uploading file: ${file.name} (${file.size} bytes)`)
       const response = await request<UploadResponse>(API_ENDPOINTS.UPLOAD, {
         method: 'POST',
         body: formData

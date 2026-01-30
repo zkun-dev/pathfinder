@@ -14,7 +14,7 @@
     ></div>
 
     <!-- 页面内容 -->
-    <div class="relative z-10 container mx-auto px-4 pt-20 md:pt-16">
+    <div class="relative z-10 container mx-auto px-4 pt-20">
       <!-- 顶部导航 -->
       <Header :nav-items="NAV_ITEMS" />
 
@@ -46,7 +46,7 @@
       <!-- 正常内容 -->
       <template v-else-if="profile">
         <!-- 英雄区域 - 全宽突出显示 -->
-        <section id="hero" class="pt-6 mb-32 scroll-mt-24">
+        <section id="hero" class="pt-6 mb-4 scroll-mt-24">
           <HeroSection
             :profile="profile"
             :avatar-url="profile.avatarUrl || undefined"
@@ -60,9 +60,9 @@
         </section>
 
         <!-- 技能展示 - 紧凑网格，无边框背景 -->
-        <section id="技能" class="pt-6 mb-24 scroll-mt-24">
+        <section id="技能" class="pt-6 mb-8 scroll-mt-24">
           <div class="max-w-6xl mx-auto">
-            <div class="mb-10">
+            <div class="mb-6">
               <h2
                 :class="[
                   'text-3xl md:text-4xl font-bold mb-2 transition-colors duration-300',
@@ -84,18 +84,10 @@
           </div>
         </section>
 
-        <!-- 分割线 -->
-        <div
-          :class="[
-            'max-w-6xl mx-auto mb-24',
-            isDark ? 'border-t border-white/10' : 'border-t border-gray-200'
-          ]"
-        ></div>
-
         <!-- 项目展示 - 大卡片，突出封面 -->
-        <section id="项目" class="pt-6 mb-24 scroll-mt-24">
+        <section id="项目" class="pt-6 mb-8 scroll-mt-24">
           <div class="max-w-6xl mx-auto">
-            <div class="mb-12">
+            <div class="mb-8">
               <h2
                 :class="[
                   'text-3xl md:text-4xl font-bold mb-2 transition-colors duration-300',
@@ -117,18 +109,10 @@
           </div>
         </section>
 
-        <!-- 分割线 -->
-        <div
-          :class="[
-            'max-w-6xl mx-auto mb-24',
-            isDark ? 'border-t border-white/10' : 'border-t border-gray-200'
-          ]"
-        ></div>
-
         <!-- 工作经历预览 - 时间线，简洁背景 -->
-        <section id="工作经历" v-if="experiences.length > 0" class="pt-6 mb-24 scroll-mt-24">
+        <section id="工作经历" v-if="experiences.length > 0" class="pt-6 mb-12 scroll-mt-24">
           <div class="max-w-6xl mx-auto">
-            <div class="mb-12">
+            <div class="mb-8">
               <h2
                 :class="[
                   'text-3xl md:text-4xl font-bold mb-2 transition-colors duration-300',
@@ -150,19 +134,10 @@
           </div>
         </section>
 
-        <!-- 分割线 -->
-        <div
-          v-if="experiences.length > 0"
-          :class="[
-            'container mx-auto mb-24',
-            isDark ? 'border-t border-white/10' : 'border-t border-gray-200'
-          ]"
-        ></div>
-
         <!-- 学习记录预览 - 紧凑卡片网格 -->
-        <section id="学习记录" class="pt-6 mb-24 scroll-mt-24">
+        <section id="学习记录" class="pt-6 mb-8 scroll-mt-24">
           <div class="max-w-6xl mx-auto">
-            <div class="mb-10">
+            <div class="mb-6">
               <h2
                 :class="[
                   'text-3xl md:text-4xl font-bold mb-2 transition-colors duration-300',
@@ -184,19 +159,10 @@
           </div>
         </section>
 
-        <!-- 分割线 -->
-        <div
-          v-if="learnings.length > 0"
-          :class="[
-            'container mx-auto mb-24',
-            isDark ? 'border-t border-white/10' : 'border-t border-gray-200'
-          ]"
-        ></div>
-
         <!-- 生活动态预览 - 图片画廊，渐变背景 -->
-        <section id="生活动态" class="pt-6 mb-24 scroll-mt-24">
+        <section id="生活动态" class="pt-6 mb-8 scroll-mt-24">
           <div class="max-w-6xl mx-auto">
-            <div class="mb-12">
+            <div class="mb-8">
               <h2
                 :class="[
                   'text-3xl md:text-4xl font-bold mb-2 transition-colors duration-300',
