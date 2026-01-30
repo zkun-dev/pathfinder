@@ -113,9 +113,11 @@ const router = createRouter({
 })
 
 router.afterEach(() => {
-  requestAnimationFrame(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
-  })
+  // 重置 #root 的滚动位置
+  const root = document.getElementById('root');
+  if (root) {
+    root.scrollTop = 0;
+  }
 })
 
 // 路由守卫
