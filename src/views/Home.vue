@@ -19,23 +19,8 @@
       <Header :nav-items="NAV_ITEMS" />
 
       <!-- 加载状态 -->
-      <div v-if="loading" class="flex items-center justify-center min-h-screen">
-        <div class="text-center">
-          <div
-            :class="[
-              'inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-transparent',
-              isDark ? 'border-white' : 'border-gray-900'
-            ]"
-          ></div>
-          <p
-            :class="[
-              'mt-4 text-lg transition-colors duration-300',
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            ]"
-          >
-            加载中...
-          </p>
-        </div>
+      <div v-if="loading" class="fixed inset-0 flex items-center justify-center overflow-hidden z-20">
+        <LoadingSpinner size="md" />
       </div>
 
       <!-- 错误状态 -->
@@ -249,6 +234,7 @@ import { ref, onMounted, computed } from 'vue'
 import { defineAsyncComponent } from 'vue'
 import { useTheme } from '@/composables/useTheme'
 import Header from '@/components/Header.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import SkillsSection from '@/components/SkillsSection.vue'
 import ProjectsSection from '@/components/ProjectsSection.vue'

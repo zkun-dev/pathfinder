@@ -305,8 +305,8 @@
                 <component :is="Component" :key="route.path" />
               </template>
               <template #fallback>
-                <div class="flex items-center justify-center min-h-[400px]">
-                  <LoadingSpinner show-text text="加载中..." />
+                <div class="flex items-center justify-center h-[calc(100vh-4rem)]">
+                  <LoadingSpinner />
                 </div>
               </template>
             </Suspense>

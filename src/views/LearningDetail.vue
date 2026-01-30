@@ -18,13 +18,8 @@
       <Header :nav-items="[]" />
 
       <!-- 加载状态 -->
-      <div v-if="loading" class="flex items-center justify-center min-h-screen">
-        <div
-          :class="[
-            'inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-transparent',
-            isDark ? 'border-white' : 'border-gray-900',
-          ]"
-        ></div>
+      <div v-if="loading" class="fixed inset-0 flex items-center justify-center overflow-hidden z-20">
+        <LoadingSpinner size="md" />
       </div>
 
       <!-- 错误状态 -->
@@ -434,6 +429,7 @@ import { useRoute } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 import { useTheme } from '@/composables/useTheme';
 import Header from '@/components/Header.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import { learningApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import { renderMarkdown } from '@/utils/markdown';

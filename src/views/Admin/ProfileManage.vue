@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LoadingSpinner v-if="initialLoading" container-class="min-h-[400px]" show-text text="加载中..." />
+    <LoadingSpinner v-if="initialLoading" container-class="h-[calc(100vh-4rem)]" />
     <template v-else>
     <h2
       :class="[
