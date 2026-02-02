@@ -146,14 +146,21 @@ const route = useRoute();
 const { toggleTheme, isDark } = useTheme();
 const mobileMenuOpen = ref(false);
 
-// 在首页、列表页和详情页显示导航，排除管理后台页面
+// 在首页、列表页显示导航，详情页和管理后台页面不显示导航
 const showNav = computed(() => {
   const path = route.path;
   // 排除管理后台页面
   if (path.startsWith('/admin')) {
     return false;
   }
-  // 在首页、列表页和详情页显示导航
+  // 排除详情页（包含 :id 参数的路由）
+  if (path.match(/\/project\/\d+/) || 
+      path.match(/\/experience\/\d+/) || 
+      path.match(/\/learning\/\d+/) || 
+      path.match(/\/life\/\d+/)) {
+    return false;
+  }
+  // 在首页和列表页显示导航
   return true;
 });
 
