@@ -505,42 +505,65 @@ onMounted(() => {
 
 <style scoped>
 .prose {
-  @apply text-gray-600 dark:text-gray-300;
+  color: rgb(75 85 99); /* text-gray-600 */
 }
+
+:global(.dark) .prose {
+  color: rgb(209 213 219); /* text-gray-300 */
+}
+
 .prose-invert {
-  @apply text-gray-300;
+  color: rgb(209 213 219); /* text-gray-300 */
 }
+
 .prose :deep(h1),
 .prose :deep(h2),
 .prose :deep(h3) {
-  @apply font-bold mb-4 mt-6;
+  font-weight: 700; /* font-bold */
+  margin-bottom: 1rem; /* mb-4 */
+  margin-top: 1.5rem; /* mt-6 */
 }
+
 .prose :deep(h1) {
-  @apply text-3xl;
+  font-size: 1.875rem; /* text-3xl */
+  line-height: 2.25rem;
 }
+
 .prose :deep(h2) {
-  @apply text-2xl;
+  font-size: 1.5rem; /* text-2xl */
+  line-height: 2rem;
 }
+
 .prose :deep(h3) {
-  @apply text-xl;
+  font-size: 1.25rem; /* text-xl */
+  line-height: 1.75rem;
 }
+
 .prose :deep(p) {
-  @apply mb-4 leading-relaxed;
+  margin-bottom: 1rem; /* mb-4 */
+  line-height: 1.625; /* leading-relaxed */
 }
+
 .prose :deep(ul),
 .prose :deep(ol) {
-  @apply mb-4 pl-6;
+  margin-bottom: 1rem; /* mb-4 */
+  padding-left: 1.5rem; /* pl-6 */
 }
+
 .prose :deep(li) {
-  @apply mb-2;
+  margin-bottom: 0.5rem; /* mb-2 */
 }
+
 .prose :deep(code) {
-  @apply px-2 py-1 rounded;
+  padding: 0.25rem 0.5rem; /* px-2 py-1 */
+  border-radius: 0.25rem; /* rounded */
 }
+
 .prose :deep(strong) {
-  @apply font-bold;
+  font-weight: 700; /* font-bold */
 }
+
 .prose :deep(em) {
-  @apply italic;
+  font-style: italic; /* italic */
 }
 </style>

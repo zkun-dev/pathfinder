@@ -12,31 +12,22 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
-  /* 滚动条样式 */
+  /* 隐藏滚动条但保留滚动功能 */
+  /* Webkit (Chrome, Safari, Edge) */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 0;
+    height: 0;
+    background: transparent;
   }
   
-  ::-webkit-scrollbar-track {
-    background: var(--bg-tertiary);
+  /* Firefox */
+  * {
+    scrollbar-width: none;
   }
   
-  ::-webkit-scrollbar-thumb {
-    background: rgba(136, 132, 216, 0.5);
-    border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(136, 132, 216, 0.8);
-  }
-  
-  /* 浅色主题下的滚动条 */
-  .light ::-webkit-scrollbar-thumb {
-    background: rgba(99, 102, 241, 0.5);
-  }
-  
-  .light ::-webkit-scrollbar-thumb:hover {
-    background: rgba(99, 102, 241, 0.8);
+  /* IE/Edge */
+  * {
+    -ms-overflow-style: none;
   }
 }
 

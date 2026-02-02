@@ -434,9 +434,14 @@ onMounted(() => {
 
 <style scoped>
 .prose {
-  @apply text-gray-600 dark:text-gray-300;
+  color: rgb(75 85 99); /* text-gray-600 */
 }
+
+:global(.dark) .prose {
+  color: rgb(209 213 219); /* text-gray-300 */
+}
+
 .prose-invert {
-  @apply text-gray-300;
+  color: rgb(209 213 219); /* text-gray-300 */
 }
 </style>

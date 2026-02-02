@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[calc(100vh-6rem)]">
+  <div class="h-[calc(100vh-7rem)]">
     <LoadingSpinner v-if="initialLoading" size="md" />
     <template v-else>
     <h2
