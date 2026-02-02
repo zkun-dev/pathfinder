@@ -20,11 +20,11 @@
       <LoadingSpinner size="md" />
     </div>
 
-    <div v-else class="relative z-10 container mx-auto px-4 pt-20 md:pt-28">
+    <div v-if="!loading" class="relative z-10 container mx-auto px-4 pt-20 md:pt-28">
       <Header :nav-items="NAV_ITEMS" />
 
       <!-- 内容区域 -->
-      <div v-else class="max-w-6xl mx-auto">
+      <div class="max-w-6xl mx-auto">
         <!-- 页面头部 -->
         <div class="flex flex-row justify-between items-center gap-3 sm:gap-4 mb-6 sm:mb-8 md:mb-12">
           <h1
