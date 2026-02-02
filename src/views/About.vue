@@ -13,17 +13,21 @@
       ]"
     ></div>
 
+    <!-- 加载状态 - 放在最外层，不受任何容器影响 -->
+    <div 
+      v-if="loading" 
+      class="fixed inset-0 z-[9999]"
+      style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0;"
+    >
+      <LoadingSpinner size="md" />
+    </div>
+
     <!-- 页面内容 -->
-    <div class="relative z-10 container mx-auto px-4 pt-28 pb-20">
+    <div v-if="!loading" class="relative z-10 container mx-auto px-4 pt-28 pb-20">
       <Header :nav-items="NAV_ITEMS" />
 
-      <!-- 加载状态 -->
-      <div v-if="loading" class="fixed inset-0 flex items-center justify-center overflow-hidden z-20">
-        <LoadingSpinner size="md" />
-      </div>
-
       <!-- 内容 -->
-      <div v-else-if="profile" class="max-w-6xl mx-auto">
+      <div v-if="profile" class="max-w-6xl mx-auto">
         <!-- 顶部导航栏 -->
         <div
           :class="[

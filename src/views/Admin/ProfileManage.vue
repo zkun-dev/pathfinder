@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <LoadingSpinner v-if="initialLoading" container-class="h-[calc(100vh-4rem)]" />
+  <div class="h-[calc(100vh-6rem)]">
+    <LoadingSpinner v-if="initialLoading" size="md" />
     <template v-else>
     <h2
       :class="[
