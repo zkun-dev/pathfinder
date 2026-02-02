@@ -11,17 +11,19 @@
       ]"
     ></div>
 
-    <!-- 加载状态 - 放在最外层，不受任何容器影响 -->
+    <!-- 头部导航 - 始终显示 -->
+    <Header :nav-items="NAV_ITEMS" />
+
+    <!-- 加载状态 - 只占据内容区域，不覆盖头部 -->
     <div 
       v-if="loading" 
-      class="fixed inset-0 z-[9999]"
-      style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0;"
+      class="fixed top-16 left-0 right-0 bottom-0 z-40"
+      style="position: fixed; top: 4rem; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0;"
     >
       <LoadingSpinner size="md" />
     </div>
 
     <div v-if="!loading" class="relative z-10 container mx-auto px-4 pt-20 md:pt-28">
-      <Header :nav-items="NAV_ITEMS" />
 
       <!-- 内容区域 -->
       <div class="max-w-6xl mx-auto">
