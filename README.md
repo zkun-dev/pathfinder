@@ -142,67 +142,14 @@ PathFinder/
 
 ### 配置环境变量
 
-#### 📝 环境变量配置说明
-
-环境变量配置是**可选的**，项目提供了默认值：
-
-- **开发环境**：默认使用 `http://localhost:3001/api`
-- **生产环境**：默认使用 Railway 后端地址（部署时建议在 Railway Variables 中配置）
-
-#### 🔧 自定义配置（可选）
-
-如果需要自定义 API 地址，可以创建环境变量文件：
-
-**1. 开发环境（可选）**
-
 ```bash
 # 复制示例文件
-cp env.example .env.development
+cp env.example ---> .env.development
 
 # 编辑 .env.development，修改为你的本地后端地址
 # VITE_API_BASE_URL=http://localhost:3001/api
 ```
-
-**2. 生产环境配置**
-
-**方式一：Railway Variables（推荐）**
-
-在 Railway Dashboard → Variables 中添加：
-```
-VITE_API_BASE_URL=https://你的后端地址.up.railway.app/api
-```
-
-**方式二：本地测试用 `.env.production`（可选）**
-
-```bash
-# 复制示例文件（仅用于本地生产构建测试）
-cp env.example .env.production
-
-# 编辑 .env.production
-# VITE_API_BASE_URL=https://your-backend.up.railway.app/api
-```
-
-⚠️ **重要提示**：
-- ✅ 环境变量必须以 `VITE_` 开头才能在 Vite 构建时访问
-- ✅ 必须是完整的 URL（包含协议和路径），例如：`http://localhost:3001/api`
-- ✅ 开发环境有默认值，无需配置即可启动
-- ✅ 生产环境部署到 Railway 时，建议在 Railway Variables 中配置（有默认值作为后备）
-- 📝 环境变量文件已被 `.gitignore` 忽略，不会提交到仓库
-
-### 🚢 Railway 部署
-
-项目已配置好 Railway 部署，详细部署指南请参考：
-
-- 📖 **[Railway 部署指南](./RAILWAY_DEPLOYMENT.md)** - 完整的 Railway 部署教程
-
-快速部署步骤：
-1. 在 Railway 创建新项目
-2. 连接 GitHub 仓库或使用 Railway CLI
-3. 配置 `VITE_API_BASE_URL` 环境变量
-4. Railway 会自动构建和部署
-
 ### 安装依赖
-
 ```bash
 pnpm install
 ```
