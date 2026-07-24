@@ -13,9 +13,6 @@
       ]"
     ></div>
 
-    <!-- 头部导航 - 始终显示 -->
-    <Header :nav-items="NAV_ITEMS" />
-
     <!-- 加载状态 - 只占据内容区域，不覆盖头部 -->
     <div 
       v-if="loading" 
@@ -492,10 +489,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 import { useTheme } from '@/composables/useTheme';
-import Header from '@/components/Header.vue';
 import ImageWithPlaceholder from '@/components/ImageWithPlaceholder.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
-import { NAV_ITEMS } from '@/constants';
 import { projectApi } from '@/services/api';
 import { logger } from '@/utils/logger';
 import { renderMarkdown } from '@/utils/markdown';
